@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/navigation_findGame"
+        android:icon="@drawable/near_me"
+        android:title="Najít hru" />
+
+    <item
+        android:id="@+id/navigation_myGames"
+        android:icon="@drawable/format_list_bulleted"
+        android:title="Moje hry" />
+
+    <!--<item
+        android:id="@+id/navigation_messages"
+        android:icon="@drawable/email_outline"
+        android:title="Zprávy" />-->
+
+    <item
+        android:id="@+id/navigation_profile"
+        android:icon="@drawable/account"
+        android:title="Profil" />
+
+</menu>
