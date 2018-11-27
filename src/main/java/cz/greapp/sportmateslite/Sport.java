@@ -1,6 +1,8 @@
 package cz.greapp.sportmateslite;
 
-public class Sport {
+import java.io.Serializable;
+
+public class Sport implements Serializable {
     private String name;
 
     public Sport(String name) {

@@ -27,7 +27,8 @@
         <activity android:name=".SettingsActivity" />
         <activity android:name=".ProfileSettingsActivity" />
         <activity android:name=".ConversationActivity" />
-        <activity android:name=".NewGameActivity"></activity>
+        <activity android:name=".NewGameActivity" />
+        <activity android:name=".GameActivity"></activity>
     </application>
 
 </manifest>

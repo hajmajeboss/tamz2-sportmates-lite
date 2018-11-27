@@ -1,6 +1,7 @@
 package cz.greapp.sportmateslite;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -41,6 +42,8 @@ public class FindGameFragment extends Fragment {
     RecyclerView gamesListView;
     RecyclerView.Adapter gamesListAdapter;
     RecyclerView.LayoutManager gamesListLayoutManager;
+    List<Game> games;
+    Context ctx;
 
     public FindGameFragment() {
         // Required empty public constructor
@@ -91,6 +94,8 @@ public class FindGameFragment extends Fragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        ctx = getContext();
+
         sportSpinner = (Spinner) view.findViewById(R.id.sportSpinner);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getContext(), R.array.sports_array, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -101,7 +106,7 @@ public class FindGameFragment extends Fragment {
         gamesListLayoutManager = new LinearLayoutManager(getContext());
         gamesListView.setLayoutManager(gamesListLayoutManager);
 
-        List<Game> games = new ArrayList<Game>();
+        games = new ArrayList<Game>();
         games.add(new Game(new Sport("Posilování"), "Buly Aréna Kravaře", "21.12.2018", "16:00", "18:00"));
         games.add(new Game(new Sport("Badminton"), "Buly Aréna Kravaře", "21.12.2018", "16:00", "18:00"));
         games.add(new Game(new Sport("Tenis"), "Buly Aréna Kravaře", "22.12.2018", "16:00", "18:00"));
@@ -117,7 +122,12 @@ public class FindGameFragment extends Fragment {
         gamesListView.addOnItemTouchListener(
                 new RecyclerItemClickListener(getContext(), gamesListView ,new RecyclerItemClickListener.OnItemClickListener() {
                     @Override public void onItemClick(View view, int position) {
-                        Toast.makeText(getContext(), "Item clicked", Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(ctx, GameActivity.class);
+                        Bundle bundle = new Bundle();
+                        bundle.putSerializable("game", games.get(position));
+                        intent.putExtras(bundle);
+                        startActivity(intent);
+
                     }
 
                     @Override public void onLongItemClick(View view, int position) {

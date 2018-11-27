@@ -1,6 +1,13 @@
 package cz.greapp.sportmateslite;
 
+import android.support.annotation.NonNull;
+
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
 
 public class Game implements Serializable {
     private Sport sport;
@@ -8,6 +15,7 @@ public class Game implements Serializable {
     private String date;
     private String timeFrom;
     private String timeTo;
+    private List<Player> players;
 
     public Game(Sport sport, String place, String date, String timeFrom, String timeTo) {
         this.sport = sport;
@@ -15,6 +23,19 @@ public class Game implements Serializable {
         this.date = date;
         this.timeFrom = timeFrom;
         this.timeTo = timeTo;
+        this.players = new ArrayList<Player>();
+    }
+
+    public List<Player> getPlayers() {
+        return players;
+    }
+
+    public void setPlayers(List<Player> players) {
+        this.players = players;
+    }
+
+    public void addPlayer(Player player) {
+        players.add(player);
     }
 
     public Sport getSport() {
