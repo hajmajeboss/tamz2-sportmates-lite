@@ -2,6 +2,7 @@ package cz.greapp.sportmateslite;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -23,6 +24,9 @@ public class ProfileFragment extends Fragment {
     private String mParam2;
 
     private OnProfileFragmentInteractionListener mListener;
+
+    SharedPreferences preferences;
+    SharedPreferences.Editor prefEdit;
 
     Button aboutButton;
     Button settingsButton;
@@ -85,6 +89,10 @@ public class ProfileFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         ctx = this.getContext();
+
+        preferences = ctx.getSharedPreferences(getString(R.string.preferences_file_key), Context.MODE_PRIVATE);
+        prefEdit = preferences.edit();
+
         aboutButton = (Button) view.findViewById(R.id.aboutButton);
         aboutButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -98,6 +106,10 @@ public class ProfileFragment extends Fragment {
         logoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                prefEdit.remove("email");
+                prefEdit.remove("pass");
+                prefEdit.remove("autoLogin");
+                prefEdit.commit();
                 Intent intent = new Intent(ctx, LoginActivity.class);
                 getActivity().finish();
                 startActivity(intent);

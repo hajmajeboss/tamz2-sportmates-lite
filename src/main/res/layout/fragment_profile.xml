@@ -27,6 +27,7 @@
         android:layout_marginStart="32dp"
         android:layout_marginTop="16dp"
         android:text="Petr Heinz"
+        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView5" />
 
@@ -46,9 +47,9 @@
         android:layout_height="93dp"
         android:layout_marginTop="32dp"
         android:layout_marginEnd="32dp"
+        android:src="@android:drawable/sym_def_app_icon"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:src="@tools:sample/avatars" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <View
         android:id="@+id/divider"
@@ -101,7 +102,6 @@
         android:layout_marginStart="24dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="24dp"
-        android:capitalize="none"
         android:gravity="left|center_vertical"
         android:text="Nastavení aplikace"
         app:layout_constraintEnd_toEndOf="parent"
@@ -116,7 +116,6 @@
         android:layout_marginStart="24dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="24dp"
-        android:capitalize="none"
         android:gravity="left|center_vertical"
         android:text="O aplikaci"
         app:layout_constraintEnd_toEndOf="parent"
@@ -147,7 +146,7 @@
         android:layout_marginStart="24dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="24dp"
-        android:capitalize="none"
+        android:capitalize="sentences"
         android:gravity="left|center_vertical"
         android:text="Upravit údaje"
         app:layout_constraintEnd_toEndOf="parent"

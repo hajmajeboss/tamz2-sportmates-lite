@@ -1,10 +1,16 @@
 package cz.greapp.sportmateslite;
 
+import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
+import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.ShareCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.View;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -15,16 +21,21 @@ public class GameActivity extends AppCompatActivity {
     TextView sportText;
     TextView placeText;
     TextView dateTimeText;
+    FloatingActionButton joinFab;
     RecyclerView playersListView;
     RecyclerView.Adapter playersListAdapter;
     RecyclerView.LayoutManager playersListLayoutManager;
     Game game;
+    Context ctx;
+    Activity activity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
 
+        ctx = this;
+        activity = this;
         toolbar = (Toolbar) findViewById(R.id.gameDetailToolbar);
         setSupportActionBar(toolbar);
 
@@ -51,6 +62,33 @@ public class GameActivity extends AppCompatActivity {
 
         playersListAdapter = new PlayerAdapter(game.getPlayers());
         playersListView.setAdapter(playersListAdapter);
+
+        playersListView.addOnItemTouchListener(
+                new RecyclerItemClickListener(ctx, playersListView ,new RecyclerItemClickListener.OnItemClickListener() {
+                    @Override public void onItemClick(View view, int position) {
+                        ShareCompat.IntentBuilder.from(activity)
+                                .setType("message/rfc822")
+                                .addEmailTo(game.getPlayers().get(position).getEmail())
+                                .setSubject("Zpráva z aplikace Sportmates")
+                                .setText(game.getSport().getName() + " - " + game.getPlace() + " - " + game.getDate() + " " + game.getTimeFrom() + "-" + game.getTimeTo() + "\n\n" + "Text zprávy: ")
+                                .setChooserTitle("Vyberte emailového klienta:")
+                                .startChooser();
+
+                    }
+
+                    @Override public void onLongItemClick(View view, int position) {
+                        // do whatever
+                    }
+                })
+        );
+
+        joinFab = (FloatingActionButton) findViewById(R.id.joinFab);
+        joinFab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
 
     }
 

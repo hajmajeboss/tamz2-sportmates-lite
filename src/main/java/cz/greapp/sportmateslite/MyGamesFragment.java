@@ -1,12 +1,20 @@
 package cz.greapp.sportmateslite;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -28,6 +36,12 @@ public class MyGamesFragment extends Fragment {
     private String mParam2;
 
     private OnFragmentInteractionListener mListener;
+
+    RecyclerView myGamesListView;
+    RecyclerView.LayoutManager myGamesLayoutManager;
+    RecyclerView.Adapter myGamesAdapter;
+    List<Game> games;
+    Context ctx;
 
     public MyGamesFragment() {
         // Required empty public constructor
@@ -72,6 +86,44 @@ public class MyGamesFragment extends Fragment {
         if (mListener != null) {
             mListener.onFragmentInteraction(uri);
         }
+    }
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        ctx = getContext();
+
+
+        myGamesListView = (RecyclerView) view.findViewById(R.id.myGamesListView);
+
+        myGamesLayoutManager = new LinearLayoutManager(getContext());
+        myGamesListView.setLayoutManager(myGamesLayoutManager);
+
+        games = new ArrayList<Game>();
+        games.add(new Game(new Sport("Tenis"), "Buly Aréna Kravaře", "21.12.2018", "16:00", "18:00"));
+        games.add(new Game(new Sport("Běh"), "Bolatice", "21.12.2018", "16:00", "18:00"));
+        games.add(new Game(new Sport("Squash"), "Health Park Opava", "22.12.2018", "16:00", "18:00"));
+
+        myGamesAdapter = new GameAdapter(games);
+        myGamesListView.setAdapter(myGamesAdapter);
+
+        myGamesListView.addOnItemTouchListener(
+                new RecyclerItemClickListener(getContext(), myGamesListView ,new RecyclerItemClickListener.OnItemClickListener() {
+                    @Override public void onItemClick(View view, int position) {
+                        Intent intent = new Intent(ctx, GameActivity.class);
+                        Bundle bundle = new Bundle();
+                        bundle.putSerializable("game", games.get(position));
+                        intent.putExtras(bundle);
+                        startActivity(intent);
+
+                    }
+
+                    @Override public void onLongItemClick(View view, int position) {
+                        // do whatever
+                    }
+                })
+        );
     }
 
     @Override

@@ -80,6 +80,8 @@
 
     <string name="pref_title_vibrate">Vibrate</string>
 
+    <string name="preferences_file_key">sportmates_prefs</string>
+
     <string-array name="sports_array">
         <item>Vše</item>
         <item>Badminton</item>
