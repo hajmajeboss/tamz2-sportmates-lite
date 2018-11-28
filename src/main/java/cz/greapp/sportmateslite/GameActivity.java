@@ -14,7 +14,6 @@ import android.widget.TextView;
 
 import cz.greapp.sportmateslite.Data.Adapters.PlayerAdapter;
 import cz.greapp.sportmateslite.Data.Models.Game;
-import cz.greapp.sportmateslite.Data.Models.Player;
 import cz.greapp.sportmateslite.Listeners.RecyclerItemClickListener;
 
 public class GameActivity extends AppCompatActivity {
@@ -55,8 +54,6 @@ public class GameActivity extends AppCompatActivity {
         placeText.setText(game.getPlace());
         dateTimeText.setText(game.getDate() + " | od " + game.getTimeFrom() + " | do " + game.getTimeTo());
 
-        game.addPlayer(new Player("David Vybíral", "davca@seznam.cz"));
-        game.addPlayer(new Player("Filip Vaníček", "filda@seznam.cz"));
         playersListView = (RecyclerView) findViewById(R.id.playersListView);
 
         playersListLayoutManager = new LinearLayoutManager(this);

@@ -38,7 +38,8 @@ public class UserTableGateway extends TableGateway {
         });
     }
 
-    public void putUser(User u, final int requestCode) {
+    public void putUser(OnFirebaseQueryResultListener listener, User u, final int requestCode) {
+        QueryResultObserver.getInstance().attachListener(listener);
         Map<String, Object> user = new HashMap<>();
         user.put("name", u.getName());
         user.put("email", u.getEmail());
@@ -46,7 +47,7 @@ public class UserTableGateway extends TableGateway {
         db.collection("users").add(user).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
             @Override
             public void onComplete(@NonNull Task<DocumentReference> task) {
-                if (!task.isSuccessful()) {
+                if (task.isSuccessful()) {
                     QueryResultObserver.getInstance().firebaseQueryResult(RESULT_OK, requestCode, null);
                 }
                 else {

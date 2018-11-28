@@ -10,6 +10,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
+
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,6 +20,10 @@ import java.util.List;
 import cz.greapp.sportmateslite.Data.Adapters.GameAdapter;
 import cz.greapp.sportmateslite.Data.Models.Game;
 import cz.greapp.sportmateslite.Data.Models.Sport;
+import cz.greapp.sportmateslite.Data.OnFirebaseQueryResultListener;
+import cz.greapp.sportmateslite.Data.Parsers.GameSnapshotParser;
+import cz.greapp.sportmateslite.Data.TableGateways.GameTableGateway;
+import cz.greapp.sportmateslite.Data.TableGateways.TableGateway;
 import cz.greapp.sportmateslite.Listeners.RecyclerItemClickListener;
 
 
@@ -28,11 +35,13 @@ import cz.greapp.sportmateslite.Listeners.RecyclerItemClickListener;
  * Use the {@link MyGamesFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class MyGamesFragment extends Fragment {
+public class MyGamesFragment extends Fragment implements OnFirebaseQueryResultListener {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+
+    public static final int REQUEST_USER_GAMES = 648;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -104,10 +113,6 @@ public class MyGamesFragment extends Fragment {
         myGamesListView.setLayoutManager(myGamesLayoutManager);
 
         games = new ArrayList<Game>();
-        games.add(new Game(new Sport("Tenis"), "Buly Aréna Kravaře", "21.12.2018", "16:00", "18:00"));
-        games.add(new Game(new Sport("Běh"), "Bolatice", "21.12.2018", "16:00", "18:00"));
-        games.add(new Game(new Sport("Squash"), "Health Park Opava", "22.12.2018", "16:00", "18:00"));
-
         myGamesAdapter = new GameAdapter(games);
         myGamesListView.setAdapter(myGamesAdapter);
 
@@ -127,6 +132,9 @@ public class MyGamesFragment extends Fragment {
                     }
                 })
         );
+
+        GameTableGateway gw = new GameTableGateway();
+        gw.getUserGames(this, REQUEST_USER_GAMES, ((MainActivity)getActivity()).getUser());
     }
 
     @Override
@@ -159,5 +167,21 @@ public class MyGamesFragment extends Fragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
+    }
+
+    @Override
+    public void onFirebaseQueryResult(int resultCode, int requestCode, QuerySnapshot result) {
+
+        if (requestCode == REQUEST_USER_GAMES) {
+            if (resultCode == TableGateway.RESULT_OK) {
+                GameSnapshotParser gsp = new GameSnapshotParser();
+                games = gsp.parseQuerySnapshot(result);
+                myGamesAdapter = new GameAdapter(games);
+                myGamesListView.setAdapter(myGamesAdapter);
+            }
+            else {
+                Toast.makeText(ctx, "Chyba při hledání her.", Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 }

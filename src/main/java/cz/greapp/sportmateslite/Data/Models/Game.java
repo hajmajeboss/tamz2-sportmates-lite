@@ -4,16 +4,17 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import cz.greapp.sportmateslite.Data.Models.Player;
-import cz.greapp.sportmateslite.Data.Models.Sport;
-
 public class Game implements Serializable {
     private Sport sport;
     private String place;
     private String date;
     private String timeFrom;
     private String timeTo;
-    private List<Player> players;
+    private List<User> players;
+
+    public Game() {
+
+    }
 
     public Game(Sport sport, String place, String date, String timeFrom, String timeTo) {
         this.sport = sport;
@@ -21,18 +22,18 @@ public class Game implements Serializable {
         this.date = date;
         this.timeFrom = timeFrom;
         this.timeTo = timeTo;
-        this.players = new ArrayList<Player>();
+        this.players = new ArrayList<User>();
     }
 
-    public List<Player> getPlayers() {
+    public List<User> getPlayers() {
         return players;
     }
 
-    public void setPlayers(List<Player> players) {
+    public void setPlayers(List<User> players) {
         this.players = players;
     }
 
-    public void addPlayer(Player player) {
+    public void addPlayer(User player) {
         players.add(player);
     }
 

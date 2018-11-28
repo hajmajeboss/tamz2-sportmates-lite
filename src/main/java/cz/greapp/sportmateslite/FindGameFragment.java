@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -12,6 +13,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
+import android.widget.Toast;
+
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +23,11 @@ import java.util.List;
 import cz.greapp.sportmateslite.Data.Adapters.GameAdapter;
 import cz.greapp.sportmateslite.Data.Models.Game;
 import cz.greapp.sportmateslite.Data.Models.Sport;
+import cz.greapp.sportmateslite.Data.OnFirebaseQueryResultListener;
+import cz.greapp.sportmateslite.Data.Parsers.GameSnapshotParser;
+import cz.greapp.sportmateslite.Data.TableGateways.GameTableGateway;
+import cz.greapp.sportmateslite.Data.TableGateways.SportTableGateway;
+import cz.greapp.sportmateslite.Data.TableGateways.TableGateway;
 import cz.greapp.sportmateslite.Listeners.RecyclerItemClickListener;
 
 
@@ -30,11 +39,13 @@ import cz.greapp.sportmateslite.Listeners.RecyclerItemClickListener;
  * Use the {@link FindGameFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class FindGameFragment extends Fragment {
+public class FindGameFragment extends Fragment implements OnFirebaseQueryResultListener {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+    private static final int REQUEST_SPORTS = 5;
+    public static final int REQUEST_GAMES = 6;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -111,17 +122,9 @@ public class FindGameFragment extends Fragment {
         gamesListView.setLayoutManager(gamesListLayoutManager);
 
         games = new ArrayList<Game>();
-        games.add(new Game(new Sport("Posilování"), "Buly Aréna Kravaře", "21.12.2018", "16:00", "18:00"));
-        games.add(new Game(new Sport("Badminton"), "Buly Aréna Kravaře", "21.12.2018", "16:00", "18:00"));
-        games.add(new Game(new Sport("Tenis"), "Buly Aréna Kravaře", "22.12.2018", "16:00", "18:00"));
-        games.add(new Game(new Sport("Posilování"), "Buly Aréna Kravaře", "23.12.2018", "16:00", "18:00"));
-        games.add(new Game(new Sport("Squash"), "Buly Aréna Kravaře", "23.12.2018", "16:00", "18:00"));
-        games.add(new Game(new Sport("Posilování"), "Buly Aréna Kravaře", "23.12.2018", "16:00", "18:00"));
-        games.add(new Game(new Sport("Horolezectví"), "Buly Aréna Kravaře", "23.12.2018", "16:00", "18:00"));
-        games.add(new Game(new Sport("Tenis"), "Buly Aréna Kravaře", "23.12.2018", "16:00", "18:00"));
-        games.add(new Game(new Sport("Posilování"), "Buly Aréna Kravaře", "23.12.2018", "16:00", "18:00"));
         gamesListAdapter = new GameAdapter(games);
         gamesListView.setAdapter(gamesListAdapter);
+
 
         gamesListView.addOnItemTouchListener(
                 new RecyclerItemClickListener(getContext(), gamesListView ,new RecyclerItemClickListener.OnItemClickListener() {
@@ -139,6 +142,9 @@ public class FindGameFragment extends Fragment {
                     }
                 })
         );
+
+        GameTableGateway gw = new GameTableGateway();
+        gw.getGames(this, REQUEST_GAMES);
     }
 
     @Override
@@ -156,6 +162,22 @@ public class FindGameFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+    }
+
+    @Override
+    public void onFirebaseQueryResult(int resultCode, int requestCode, QuerySnapshot result) {
+
+        if (requestCode == REQUEST_GAMES) {
+            if (resultCode == TableGateway.RESULT_OK) {
+                GameSnapshotParser gsp = new GameSnapshotParser();
+                games = gsp.parseQuerySnapshot(result);
+                gamesListAdapter = new GameAdapter(games);
+                gamesListView.setAdapter(gamesListAdapter);
+            }
+            else {
+                Toast.makeText(ctx, "Chyba při hledání her.", Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 
     /**

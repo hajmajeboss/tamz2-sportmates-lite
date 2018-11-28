@@ -28,6 +28,7 @@ import java.util.List;
 
 import cz.greapp.sportmateslite.Data.Models.User;
 import cz.greapp.sportmateslite.Data.OnFirebaseQueryResultListener;
+import cz.greapp.sportmateslite.Data.TableGateways.GameTableGateway;
 import cz.greapp.sportmateslite.Data.TableGateways.TableGateway;
 import cz.greapp.sportmateslite.Data.TableGateways.UserTableGateway;
 
@@ -132,6 +133,9 @@ public class MainActivity extends AppCompatActivity implements ProfileFragment.O
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(ctx, NewGameActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("user", user);
+                intent.putExtras(bundle);
                 startActivityForResult(intent, MainActivity.NEW_GAME_REQUEST);
             }
         });
@@ -206,10 +210,21 @@ public class MainActivity extends AppCompatActivity implements ProfileFragment.O
                 }
                 progressDialog.dismiss();
             }
+            else {
+                Toast.makeText(ctx, "Chyba", Toast.LENGTH_SHORT).show();
+                progressDialog.dismiss();
+            }
         }
-        else {
-            Toast.makeText(ctx, "Chyba", Toast.LENGTH_SHORT).show();
-            progressDialog.dismiss();
+
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == NEW_GAME_REQUEST) {
+            if (resultCode == RESULT_OK) {
+                GameTableGateway gw = new GameTableGateway();
+                gw.getGames(null, FindGameFragment.REQUEST_GAMES);
+            }
         }
     }
 }

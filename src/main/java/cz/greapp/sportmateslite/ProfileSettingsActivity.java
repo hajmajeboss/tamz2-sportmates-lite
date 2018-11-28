@@ -26,7 +26,6 @@ import cz.greapp.sportmateslite.Data.Models.User;
 public class ProfileSettingsActivity extends AppCompatActivity {
 
     Toolbar toolbar;
-    TextInputEditText nameField;
     Button takePhotoButton;
     Button selectPhotoButton;
     Button changePasswordButton;
@@ -57,9 +56,6 @@ public class ProfileSettingsActivity extends AppCompatActivity {
 
         Bundle extras = getIntent().getExtras();
         user = (User) extras.getSerializable("user");
-
-        nameField = (TextInputEditText) findViewById(R.id.editNameField);
-        nameField.setText(user.getName());
 
         selectPhotoButton = (Button) findViewById(R.id.selectProfilePictureButton);
         selectPhotoButton.setOnClickListener(new View.OnClickListener() {
@@ -150,7 +146,6 @@ public class ProfileSettingsActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         if (id == R.id.profile_settings_navigation_save) {
-            user.setName(nameField.getText().toString());
             Intent ret = new Intent();
             Bundle bundle = new Bundle();
             bundle.putSerializable("user", user);

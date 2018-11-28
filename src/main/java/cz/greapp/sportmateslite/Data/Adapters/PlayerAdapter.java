@@ -8,12 +8,12 @@ import android.widget.TextView;
 
 import java.util.List;
 
-import cz.greapp.sportmateslite.Data.Models.Player;
+import cz.greapp.sportmateslite.Data.Models.User;
 import cz.greapp.sportmateslite.R;
 
 public class PlayerAdapter extends RecyclerView.Adapter<PlayerAdapter.PlayerViewHolder> {
 
-    private List<Player> playersList;
+    private List<User> playersList;
 
     public static class PlayerViewHolder extends RecyclerView.ViewHolder {
 
@@ -26,7 +26,7 @@ public class PlayerAdapter extends RecyclerView.Adapter<PlayerAdapter.PlayerView
         }
     }
 
-    public PlayerAdapter(List<Player> players) {
+    public PlayerAdapter(List<User> players) {
         playersList = players;
     }
 
@@ -41,7 +41,7 @@ public class PlayerAdapter extends RecyclerView.Adapter<PlayerAdapter.PlayerView
 
     @Override
     public void onBindViewHolder(PlayerViewHolder holder, int position) {
-        Player player = playersList.get(position);
+        User player = playersList.get(position);
         holder.playerNameText.setText(player.getName());
         holder.playerEmailText.setText(player.getEmail());
     }
