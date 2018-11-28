@@ -16,6 +16,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.google.firebase.auth.FirebaseAuth;
+
 import cz.greapp.sportmateslite.Data.Models.User;
 
 public class MainActivity extends AppCompatActivity implements ProfileFragment.OnProfileFragmentInteractionListener, MessagesFragment.OnFragmentInteractionListener, MyGamesFragment.OnFragmentInteractionListener, FindGameFragment.OnFragmentInteractionListener {
@@ -171,11 +173,8 @@ public class MainActivity extends AppCompatActivity implements ProfileFragment.O
         }
 
         if (id == R.id.main_navigation_logout) {
-            prefEdit = preferences.edit();
-            prefEdit.remove("email");
-            prefEdit.remove("pass");
-            prefEdit.remove("autoLogin");
-            prefEdit.commit();
+            FirebaseAuth auth = FirebaseAuth.getInstance();
+            auth.signOut();
             Intent intent = new Intent(ctx, LoginActivity.class);
             finish();
             startActivity(intent);
