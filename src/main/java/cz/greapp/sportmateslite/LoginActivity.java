@@ -11,7 +11,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.Toast;
 
-import org.w3c.dom.Text;
+import cz.greapp.sportmateslite.Data.Models.User;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -95,6 +95,11 @@ public class LoginActivity extends AppCompatActivity {
         if (requestCode == LoginActivity.REGISTER_CODE) {
             if (resultCode == RESULT_OK) {
                 Intent intent = new Intent(ctx, MainActivity.class);
+                Bundle extras = getIntent().getExtras();
+                User user = (User) extras.getSerializable("user");
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("user", user);
+                intent.putExtras(bundle);
                 finish();
                 startActivity(intent);
             }

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/main_navigation_settings"
+        android:icon="@drawable/check"
+        android:title="Nastavení"
+        app:showAsAction="never"/>
+
+    <item
+        android:id="@+id/main_navigation_about"
+        android:icon="@drawable/check"
+        android:title="O aplikaci"
+        app:showAsAction="never"/>
+
+    <item
+        android:id="@+id/main_navigation_logout"
+        android:icon="@drawable/check"
+        android:title="Odhlásit se"
+        app:showAsAction="never"/>
+
+
+</menu>

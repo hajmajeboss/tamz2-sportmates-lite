@@ -21,9 +21,6 @@
         </activity>
         <activity android:name=".RegisterActivity" />
         <activity android:name=".AboutActivity" />
-        <activity
-            android:name=".AppSettingsActivity"
-            android:label="@string/title_activity_app_settings" />
         <activity android:name=".SettingsActivity" />
         <activity android:name=".ProfileSettingsActivity" />
         <activity android:name=".ConversationActivity" />

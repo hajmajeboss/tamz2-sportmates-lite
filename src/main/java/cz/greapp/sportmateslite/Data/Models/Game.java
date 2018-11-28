@@ -1,13 +1,11 @@
-package cz.greapp.sportmateslite;
-
-import android.support.annotation.NonNull;
+package cz.greapp.sportmateslite.Data.Models;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
+
+import cz.greapp.sportmateslite.Data.Models.Player;
+import cz.greapp.sportmateslite.Data.Models.Sport;
 
 public class Game implements Serializable {
     private Sport sport;

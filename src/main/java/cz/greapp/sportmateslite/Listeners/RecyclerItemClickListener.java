@@ -1,4 +1,4 @@
-package cz.greapp.sportmateslite;
+package cz.greapp.sportmateslite.Listeners;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;

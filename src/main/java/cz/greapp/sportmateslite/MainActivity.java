@@ -2,24 +2,32 @@ package cz.greapp.sportmateslite;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.TextView;
 
-public class MainActivity extends FragmentActivity implements ProfileFragment.OnProfileFragmentInteractionListener, MessagesFragment.OnFragmentInteractionListener, MyGamesFragment.OnFragmentInteractionListener, FindGameFragment.OnFragmentInteractionListener {
+import cz.greapp.sportmateslite.Data.Models.User;
+
+public class MainActivity extends AppCompatActivity implements ProfileFragment.OnProfileFragmentInteractionListener, MessagesFragment.OnFragmentInteractionListener, MyGamesFragment.OnFragmentInteractionListener, FindGameFragment.OnFragmentInteractionListener {
 
     private User user;
     FloatingActionButton mainFab;
     Context ctx;
+
+    SharedPreferences preferences;
+    SharedPreferences.Editor prefEdit;
+
+    Toolbar toolbar;
 
     public static final int NEW_GAME_REQUEST = 0;
 
@@ -98,10 +106,16 @@ public class MainActivity extends FragmentActivity implements ProfileFragment.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        toolbar = (Toolbar) findViewById(R.id.mainToolbar);
+        setSupportActionBar(toolbar);
+
+        ctx = this;
+        preferences = ctx.getSharedPreferences(getString(R.string.preferences_file_key), Context.MODE_PRIVATE);
+
+
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
-        ctx = this;
 
         Bundle extras = getIntent().getExtras();
         user = (User) extras.getSerializable("user");
@@ -131,6 +145,44 @@ public class MainActivity extends FragmentActivity implements ProfileFragment.On
     @Override
     public void onFragmentInteraction(Uri uri) {
 
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main_nav, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        int id = item.getItemId();
+
+        if (id == R.id.main_navigation_settings) {
+            Intent intent = new Intent(ctx, SettingsActivity.class);
+            startActivity(intent);
+            return true;
+        }
+
+        if (id == R.id.main_navigation_about) {
+            Intent intent = new Intent(ctx, AboutActivity.class);
+            startActivity(intent);
+            return true;
+        }
+
+        if (id == R.id.main_navigation_logout) {
+            prefEdit = preferences.edit();
+            prefEdit.remove("email");
+            prefEdit.remove("pass");
+            prefEdit.remove("autoLogin");
+            prefEdit.commit();
+            Intent intent = new Intent(ctx, LoginActivity.class);
+            finish();
+            startActivity(intent);
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     public User getUser() {

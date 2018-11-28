@@ -1,4 +1,4 @@
-package cz.greapp.sportmateslite;
+package cz.greapp.sportmateslite.Data.Models;
 
 import android.media.Image;
 

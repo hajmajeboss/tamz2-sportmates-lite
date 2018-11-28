@@ -1,4 +1,4 @@
-package cz.greapp.sportmateslite;
+package cz.greapp.sportmateslite.Data.Adapters;
 
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.RecyclerView;
@@ -7,6 +7,9 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import java.util.List;
+
+import cz.greapp.sportmateslite.Data.Models.Player;
+import cz.greapp.sportmateslite.R;
 
 public class PlayerAdapter extends RecyclerView.Adapter<PlayerAdapter.PlayerViewHolder> {
 

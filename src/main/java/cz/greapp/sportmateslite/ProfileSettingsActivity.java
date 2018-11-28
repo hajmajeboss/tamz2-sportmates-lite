@@ -21,6 +21,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import cz.greapp.sportmateslite.Data.Models.User;
+
 public class ProfileSettingsActivity extends AppCompatActivity {
 
     Toolbar toolbar;
@@ -91,6 +93,7 @@ public class ProfileSettingsActivity extends AppCompatActivity {
                 builder.setTitle("Nové heslo");
 
                 final EditText input = new EditText(ctx);
+
                 input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
                 builder.setView(input);
 

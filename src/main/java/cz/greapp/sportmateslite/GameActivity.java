@@ -2,7 +2,6 @@ package cz.greapp.sportmateslite;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ShareCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -13,7 +12,10 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.TextView;
 
-import java.util.ArrayList;
+import cz.greapp.sportmateslite.Data.Adapters.PlayerAdapter;
+import cz.greapp.sportmateslite.Data.Models.Game;
+import cz.greapp.sportmateslite.Data.Models.Player;
+import cz.greapp.sportmateslite.Listeners.RecyclerItemClickListener;
 
 public class GameActivity extends AppCompatActivity {
 

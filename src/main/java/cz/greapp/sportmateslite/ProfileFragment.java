@@ -28,10 +28,8 @@ public class ProfileFragment extends Fragment {
     SharedPreferences preferences;
     SharedPreferences.Editor prefEdit;
 
-    Button aboutButton;
-    Button settingsButton;
+
     Button profileSettingsButton;
-    Button logoutButton;
 
     TextView nameText;
     TextView emailText;
@@ -93,38 +91,7 @@ public class ProfileFragment extends Fragment {
         preferences = ctx.getSharedPreferences(getString(R.string.preferences_file_key), Context.MODE_PRIVATE);
         prefEdit = preferences.edit();
 
-        aboutButton = (Button) view.findViewById(R.id.aboutButton);
-        aboutButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(ctx, AboutActivity.class);
-                startActivity(intent);
-            }
-        });
 
-        logoutButton = (Button) view.findViewById(R.id.logoutButton);
-        logoutButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                prefEdit.remove("email");
-                prefEdit.remove("pass");
-                prefEdit.remove("autoLogin");
-                prefEdit.commit();
-                Intent intent = new Intent(ctx, LoginActivity.class);
-                getActivity().finish();
-                startActivity(intent);
-
-            }
-        });
-
-        settingsButton = (Button) view.findViewById(R.id.settingsButton);
-        settingsButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(ctx, SettingsActivity.class);
-                startActivity(intent);
-            }
-        });
 
         profileSettingsButton = (Button) view.findViewById(R.id.profileSettingsButton);
         profileSettingsButton.setOnClickListener(new View.OnClickListener() {
