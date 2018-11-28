@@ -12,6 +12,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import cz.greapp.sportmateslite.Data.Models.User;
+
 
 public class ProfileFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
@@ -91,7 +93,12 @@ public class ProfileFragment extends Fragment {
         preferences = ctx.getSharedPreferences(getString(R.string.preferences_file_key), Context.MODE_PRIVATE);
         prefEdit = preferences.edit();
 
+        nameText = (TextView) view.findViewById(R.id.nameText);
+        emailText = (TextView) view.findViewById(R.id.emailText);
 
+        User user = ((MainActivity)getActivity()).getUser();
+        nameText.setText(user.getName());
+        emailText.setText(user.getEmail());
 
         profileSettingsButton = (Button) view.findViewById(R.id.profileSettingsButton);
         profileSettingsButton.setOnClickListener(new View.OnClickListener() {

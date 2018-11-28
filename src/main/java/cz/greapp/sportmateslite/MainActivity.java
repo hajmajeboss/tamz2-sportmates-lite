@@ -1,5 +1,6 @@
 package cz.greapp.sportmateslite;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -15,12 +16,22 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
+import com.google.common.collect.Table;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+
+import java.util.List;
 
 import cz.greapp.sportmateslite.Data.Models.User;
+import cz.greapp.sportmateslite.Data.OnFirebaseQueryResultListener;
+import cz.greapp.sportmateslite.Data.TableGateways.TableGateway;
+import cz.greapp.sportmateslite.Data.TableGateways.UserTableGateway;
 
-public class MainActivity extends AppCompatActivity implements ProfileFragment.OnProfileFragmentInteractionListener, MessagesFragment.OnFragmentInteractionListener, MyGamesFragment.OnFragmentInteractionListener, FindGameFragment.OnFragmentInteractionListener {
+public class MainActivity extends AppCompatActivity implements ProfileFragment.OnProfileFragmentInteractionListener, MessagesFragment.OnFragmentInteractionListener, MyGamesFragment.OnFragmentInteractionListener, FindGameFragment.OnFragmentInteractionListener, OnFirebaseQueryResultListener {
 
     private User user;
     FloatingActionButton mainFab;
@@ -29,9 +40,12 @@ public class MainActivity extends AppCompatActivity implements ProfileFragment.O
     SharedPreferences preferences;
     SharedPreferences.Editor prefEdit;
 
+    ProgressDialog progressDialog;
+
     Toolbar toolbar;
 
     public static final int NEW_GAME_REQUEST = 0;
+    public static final int REQUEST_USER_BY_EMAIL = 100;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -73,22 +87,6 @@ public class MainActivity extends AppCompatActivity implements ProfileFragment.O
                         }
                     });
                     return true;
-                /*case R.id.navigation_messages:
-                    fragmentManager = getSupportFragmentManager();
-                    fragmentTransaction = fragmentManager.beginTransaction();
-                    MessagesFragment messagesFragment = new MessagesFragment();
-                    fragmentTransaction.replace(R.id.fragment_container, messagesFragment);
-                    fragmentTransaction.commit();
-
-                    mainFab.setVisibility(View.VISIBLE);
-                    mainFab.setImageResource(R.drawable.message_plus);
-                    mainFab.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-
-                        }
-                    });
-                    return true;*/
                 case R.id.navigation_profile:
                     fragmentManager = getSupportFragmentManager();
                     fragmentTransaction = fragmentManager.beginTransaction();
@@ -122,6 +120,13 @@ public class MainActivity extends AppCompatActivity implements ProfileFragment.O
         Bundle extras = getIntent().getExtras();
         user = (User) extras.getSerializable("user");
 
+        //Zjistí a nastaví jméno uživatele
+        UserTableGateway gw = new UserTableGateway();
+        gw.getUserByEmail(this, user.getEmail(), REQUEST_USER_BY_EMAIL);
+
+        progressDialog = ProgressDialog.show(ctx, "Načítám", "Může to trvat několik vteřin...");
+
+
         mainFab = (FloatingActionButton) findViewById(R.id.mainFab);
         mainFab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -136,6 +141,7 @@ public class MainActivity extends AppCompatActivity implements ProfileFragment.O
         FindGameFragment findGameFragment = new FindGameFragment();
         fragmentTransaction.replace(R.id.fragment_container,findGameFragment);
         fragmentTransaction.commit();
+
 
     }
 
@@ -186,5 +192,24 @@ public class MainActivity extends AppCompatActivity implements ProfileFragment.O
 
     public User getUser() {
         return user;
+    }
+
+    @Override
+    public void onFirebaseQueryResult(int resultCode, int requestCode, QuerySnapshot result) {
+        if (requestCode == REQUEST_USER_BY_EMAIL) {
+            if (resultCode == TableGateway.RESULT_OK) {
+                List<DocumentSnapshot> refList = result.getDocuments();
+                if (refList != null && refList.size() > 0 ) {
+                    DocumentSnapshot ref = refList.get(0);
+                    user = new User(ref.getString("name"), ref.getString("email"));
+
+                }
+                progressDialog.dismiss();
+            }
+        }
+        else {
+            Toast.makeText(ctx, "Chyba", Toast.LENGTH_SHORT).show();
+            progressDialog.dismiss();
+        }
     }
 }

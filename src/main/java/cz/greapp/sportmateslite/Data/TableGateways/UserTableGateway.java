@@ -14,33 +14,31 @@ import java.util.HashMap;
 import java.util.Map;
 
 import cz.greapp.sportmateslite.Data.Models.User;
+import cz.greapp.sportmateslite.Data.OnFirebaseQueryResultListener;
 import cz.greapp.sportmateslite.Data.QueryResultObserver;
 
 public class UserTableGateway extends TableGateway {
-
-    public static final int REQUEST_USER_BY_EMAIL = 1;
-    public static final int REQUEST_UPDATE_USER_BY_EMAIL = 2;
-    public static final int REQUEST_REGISTER_USER = 3;
 
     public UserTableGateway() {
         super();
     }
 
-    public void getUserByEmail(String email) {
+    public void getUserByEmail(OnFirebaseQueryResultListener listener, String email, final int requestCode) {
+        QueryResultObserver.getInstance().attachListener(listener);
         db.collection("users").whereEqualTo("email", email).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
-                    QueryResultObserver.getInstance().firebaseQueryResult(RESULT_OK, REQUEST_USER_BY_EMAIL, task.getResult());
+                    QueryResultObserver.getInstance().firebaseQueryResult(RESULT_OK, requestCode, task.getResult());
                 }
                 else {
-                    QueryResultObserver.getInstance().firebaseQueryResult(RESULT_ERR, REQUEST_USER_BY_EMAIL, null);
+                    QueryResultObserver.getInstance().firebaseQueryResult(RESULT_ERR, requestCode, null);
                 }
             }
         });
     }
 
-    public void putUser(User u) {
+    public void putUser(User u, final int requestCode) {
         Map<String, Object> user = new HashMap<>();
         user.put("name", u.getName());
         user.put("email", u.getEmail());
@@ -49,10 +47,10 @@ public class UserTableGateway extends TableGateway {
             @Override
             public void onComplete(@NonNull Task<DocumentReference> task) {
                 if (!task.isSuccessful()) {
-                    QueryResultObserver.getInstance().firebaseQueryResult(RESULT_OK, REQUEST_REGISTER_USER, null);
+                    QueryResultObserver.getInstance().firebaseQueryResult(RESULT_OK, requestCode, null);
                 }
                 else {
-                    QueryResultObserver.getInstance().firebaseQueryResult(RESULT_ERR, REQUEST_REGISTER_USER, null);
+                    QueryResultObserver.getInstance().firebaseQueryResult(RESULT_ERR, requestCode, null);
                 }
             }
         });
@@ -65,6 +63,5 @@ public class UserTableGateway extends TableGateway {
     public void updateUser() {
 
     }
-
 
 }

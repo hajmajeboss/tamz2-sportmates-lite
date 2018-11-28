@@ -31,7 +31,9 @@ public class QueryResultObserver {
     }
 
     public void attachListener(OnFirebaseQueryResultListener listener) {
-        observables.add(listener);
+        if (!observables.contains(listener)) {
+            observables.add(listener);
+        }
     }
 
 }
