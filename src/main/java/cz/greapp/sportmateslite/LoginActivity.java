@@ -3,6 +3,7 @@ package cz.greapp.sportmateslite;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -15,7 +16,7 @@ import cz.greapp.sportmateslite.Data.Models.User;
 
 public class LoginActivity extends AppCompatActivity {
 
-    Button loginButton;
+    FloatingActionButton loginButton;
     Button signUpButton;
     TextInputEditText emailField;
     TextInputEditText passwordField;
@@ -42,7 +43,7 @@ public class LoginActivity extends AppCompatActivity {
         emailField = (TextInputEditText) findViewById(R.id.emailField);
         passwordField = (TextInputEditText) findViewById(R.id.passwordField);
 
-        loginButton = (Button) findViewById(R.id.loginButton);
+        loginButton = (FloatingActionButton) findViewById(R.id.signInFab);
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
