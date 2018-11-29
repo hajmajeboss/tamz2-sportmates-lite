@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -54,6 +55,9 @@ public class MyGamesFragment extends Fragment implements OnFirebaseQueryResultLi
     RecyclerView.Adapter myGamesAdapter;
     List<Game> games;
     Context ctx;
+
+    SwipeRefreshLayout swipeRefreshLayout;
+    OnFirebaseQueryResultListener listener;
 
     public MyGamesFragment() {
         // Required empty public constructor
@@ -105,6 +109,7 @@ public class MyGamesFragment extends Fragment implements OnFirebaseQueryResultLi
         super.onViewCreated(view, savedInstanceState);
 
         ctx = getContext();
+        listener = this;
 
 
         myGamesListView = (RecyclerView) view.findViewById(R.id.myGamesListView);
@@ -133,8 +138,19 @@ public class MyGamesFragment extends Fragment implements OnFirebaseQueryResultLi
                 })
         );
 
+        swipeRefreshLayout = view.findViewById(R.id.myGameSwipeRefresh);
+        swipeRefreshLayout.setRefreshing(true);
         GameTableGateway gw = new GameTableGateway();
         gw.getUserGames(this, REQUEST_USER_GAMES, ((MainActivity)getActivity()).getUser());
+
+
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                GameTableGateway gw = new GameTableGateway();
+                gw.getUserGames(listener, REQUEST_USER_GAMES, ((MainActivity)getActivity()).getUser());
+            }
+        });
     }
 
     @Override
@@ -178,6 +194,7 @@ public class MyGamesFragment extends Fragment implements OnFirebaseQueryResultLi
                 games = gsp.parseQuerySnapshot(result);
                 myGamesAdapter = new GameAdapter(games);
                 myGamesListView.setAdapter(myGamesAdapter);
+                swipeRefreshLayout.setRefreshing(false);
             }
             else {
                 Toast.makeText(ctx, "Chyba při hledání her.", Toast.LENGTH_SHORT).show();

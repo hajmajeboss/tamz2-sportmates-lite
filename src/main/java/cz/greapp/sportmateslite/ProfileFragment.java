@@ -3,14 +3,29 @@ package cz.greapp.sportmateslite;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.storage.FileDownloadTask;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.protobuf.compiler.PluginProtos;
+
+import java.io.File;
+import java.io.IOException;
 
 import cz.greapp.sportmateslite.Data.Models.User;
 
@@ -30,12 +45,15 @@ public class ProfileFragment extends Fragment {
     SharedPreferences preferences;
     SharedPreferences.Editor prefEdit;
 
+    ImageView profileImage;
 
     Button profileSettingsButton;
 
     TextView nameText;
     TextView emailText;
     Context ctx;
+
+    FirebaseStorage storageRef;
 
     public ProfileFragment() {
         // Required empty public constructor
@@ -90,6 +108,7 @@ public class ProfileFragment extends Fragment {
 
         ctx = this.getContext();
 
+
         preferences = ctx.getSharedPreferences(getString(R.string.preferences_file_key), Context.MODE_PRIVATE);
         prefEdit = preferences.edit();
 
@@ -111,6 +130,32 @@ public class ProfileFragment extends Fragment {
                 startActivity(intent);
             }
         });
+
+        profileImage = view.findViewById(R.id.avatarImage);
+
+        storageRef = FirebaseStorage.getInstance();
+
+        StorageReference gsReference = storageRef.getReferenceFromUrl("gs://sportmateslite.appspot.com/" + ((MainActivity)getActivity()).getUser().getId() +  ".jpg");
+
+        try {
+            final File localFile = File.createTempFile("images", "jpg");
+            gsReference.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                    profileImage.setImageBitmap(BitmapFactory.decodeFile(localFile.getAbsolutePath()));
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception exception) {
+                    // Handle any errors
+                }
+            });
+        }
+        catch (IOException e) {
+
+        }
+
+
     }
 
     @Override

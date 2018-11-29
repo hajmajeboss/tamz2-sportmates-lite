@@ -55,15 +55,9 @@ public class NewGameActivity extends AppCompatActivity implements OnFirebaseQuer
         toolbar = (Toolbar) findViewById(R.id.newGameToolbar);
         setSupportActionBar(toolbar);
 
-        Intent intent = getIntent();
-        Bundle extras = intent.getExtras();
-        if (extras != null) {
-            user = (User) extras.getSerializable("user");
-        }
-        else {
-            user = new User("gg", "wp");
-            Toast.makeText(ctx, "Fuck it all", Toast.LENGTH_SHORT).show();
-        }
+
+        user = (User)getIntent().getSerializableExtra("user");
+
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 

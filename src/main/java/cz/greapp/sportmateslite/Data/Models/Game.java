@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Game implements Serializable {
+    private String id;
     private Sport sport;
     private String place;
     private String date;
@@ -23,6 +24,14 @@ public class Game implements Serializable {
         this.timeFrom = timeFrom;
         this.timeTo = timeTo;
         this.players = new ArrayList<User>();
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public List<User> getPlayers() {

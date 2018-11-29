@@ -24,6 +24,7 @@ public class GameSnapshotParser {
 
     public Game parseDocumentSnapshot (DocumentSnapshot snapshot) {
         Game game = new Game();
+        game.setId(snapshot.getId());
         game.setDate(snapshot.getString("date"));
         game.setPlace(snapshot.getString("place"));
         game.setTimeFrom(snapshot.getString("time_from"));

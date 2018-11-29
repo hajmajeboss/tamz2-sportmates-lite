@@ -206,6 +206,7 @@ public class MainActivity extends AppCompatActivity implements ProfileFragment.O
                 if (refList != null && refList.size() > 0 ) {
                     DocumentSnapshot ref = refList.get(0);
                     user = new User(ref.getString("name"), ref.getString("email"));
+                    user.setId(ref.getId());
 
                 }
                 progressDialog.dismiss();
