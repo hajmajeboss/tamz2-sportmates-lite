@@ -181,11 +181,12 @@ public class MainActivity extends AppCompatActivity implements ProfileFragment.O
 
         int id = item.getItemId();
 
+        /*
         if (id == R.id.main_navigation_settings) {
             Intent intent = new Intent(ctx, SettingsActivity.class);
             startActivity(intent);
             return true;
-        }
+        }*/
 
         if (id == R.id.main_navigation_about) {
             Intent intent = new Intent(ctx, AboutActivity.class);
@@ -271,6 +272,7 @@ public class MainActivity extends AppCompatActivity implements ProfileFragment.O
             if (resultCode == RESULT_OK) {
                 GameTableGateway gw = new GameTableGateway();
                 gw.getGames(null, FindGameFragment.REQUEST_GAMES);
+                gw.getUserGames(null, MyGamesFragment.REQUEST_USER_GAMES, getUser());
             }
         }
 

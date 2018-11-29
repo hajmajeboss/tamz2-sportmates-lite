@@ -16,8 +16,12 @@ import android.widget.Toast;
 
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import cz.greapp.sportmateslite.Data.Models.Game;
 import cz.greapp.sportmateslite.Data.Models.Sport;
@@ -80,6 +84,44 @@ public class NewGameActivity extends AppCompatActivity implements OnFirebaseQuer
         newGameFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                String dateRegex = "^[0-3]?[0-9].[0-3]?[0-9].(?:[0-9]{2})?[0-9]{2}$";
+                String dateRegex1 = "^[0-3]?[0-9]/[0-3]?[0-9]/(?:[0-9]{2})?[0-9]{2}$";
+                String timeRegex = "^[0-2][0-9]:[0-5][0-9]$";
+
+                Pattern datePattern = Pattern.compile(dateRegex);
+                Pattern datePattern1 = Pattern.compile(dateRegex1);
+                Pattern timePattern = Pattern.compile(timeRegex);
+
+                Matcher dateMatcher = datePattern.matcher(newGameDateField.getText().toString());
+                Matcher dateMatcher1 = datePattern1.matcher(newGameDateField.getText().toString());
+                Matcher timeFromMatcher = timePattern.matcher(newGameTimeFromField.getText().toString());
+                Matcher timeToMatcher = timePattern.matcher(newGameTimeToField.getText().toString());
+
+                if (newGamePlaceField.getText().toString().equals("")) {
+                    Toast.makeText(ctx, "Vložte prosím místo konání.", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                if (!(dateMatcher.matches() || dateMatcher1.matches())) {
+                    Toast.makeText(ctx, "Vložte prosím validní datum.", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+
+                if (!timeFromMatcher.matches() || !timeToMatcher.matches()) {
+                    Toast.makeText(ctx, "Vložte prosím validní čas.", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                if (Integer.parseInt(newGameTimeFromField.getText().toString().split(":")[0]) > 23
+                        || Integer.parseInt(newGameTimeToField.getText().toString().split(":")[0]) > 23 )  {
+                    Toast.makeText(ctx, "Vložte prosím validní čas.", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+
+
                 GameTableGateway gw = new GameTableGateway();
                 Game game = new Game();
                 game.setPlace(newGamePlaceField.getText().toString());
@@ -92,6 +134,8 @@ public class NewGameActivity extends AppCompatActivity implements OnFirebaseQuer
                 game.setSport(new Sport(sportSpinner.getSelectedItem().toString()));
                 gw.putGame(listener, REQUEST_NEW_GAME, game);
                 progressDialog = ProgressDialog.show(ctx, "Přidat hru", "Může to trvat několik vteřin...");
+
+
             }
         });
     }

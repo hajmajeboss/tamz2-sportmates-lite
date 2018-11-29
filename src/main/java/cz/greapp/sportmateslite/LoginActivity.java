@@ -1,5 +1,6 @@
 package cz.greapp.sportmateslite;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -35,6 +36,8 @@ public class LoginActivity extends AppCompatActivity {
     SharedPreferences preferences;
     SharedPreferences.Editor prefEdit;
 
+    ProgressDialog progressDialog;
+
     public static final int REGISTER_CODE = 100;
 
     @Override
@@ -53,6 +56,7 @@ public class LoginActivity extends AppCompatActivity {
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                progressDialog = ProgressDialog.show(ctx, "Přihlásit se", "Může to trvat několik vteřin...");
                 String email = emailField.getText().toString();
                 String password = passwordField.getText().toString();
 
@@ -61,6 +65,7 @@ public class LoginActivity extends AppCompatActivity {
                        @Override
                        public void onComplete(@NonNull Task<AuthResult> task) {
                             if (task.isSuccessful()) {
+                                progressDialog.dismiss();
                                 FirebaseUser user = auth.getCurrentUser();
                                 Intent intent = new Intent(ctx, MainActivity.class);
                                 Bundle extras = new Bundle();
@@ -70,6 +75,7 @@ public class LoginActivity extends AppCompatActivity {
                                 startActivity(intent);
                             }
                             else {
+                                progressDialog.dismiss();
                                 Toast.makeText(LoginActivity.this, "Přihlášení selhalo. " +
                                         "Zkontrolujte, zda máte vyplněno správné uživatelské jméno a heslo.",
                                         Toast.LENGTH_SHORT).show();
