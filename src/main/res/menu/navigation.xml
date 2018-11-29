@@ -3,7 +3,7 @@
 
     <item
         android:id="@+id/navigation_findGame"
-        android:icon="@drawable/near_me"
+        android:icon="@drawable/magnify"
         android:title="Najít hru" />
 
     <item

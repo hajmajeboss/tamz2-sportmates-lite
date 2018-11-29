@@ -140,6 +140,10 @@ public class FindGameFragment extends Fragment implements OnFirebaseQueryResultL
                 prefEditor.putInt("selected_filter", i);
                 prefEditor.putString("selected_filter_name", adapterView.getItemAtPosition(i).toString());
                 prefEditor.commit();
+
+                GameTableGateway gw = new GameTableGateway();
+                swipeRefreshLayout.setRefreshing(true);
+                gw.getGames(null, REQUEST_GAMES);
             }
 
             @Override
@@ -219,14 +223,23 @@ public class FindGameFragment extends Fragment implements OnFirebaseQueryResultL
                 Game g;
                 User user = new User(preferences.getString("username", null), preferences.getString("useremail", null));
                 while (gameIterator.hasNext()) {
+                    boolean remove = false;
                     g = gameIterator.next();
                     try {
                         if (g.getPlayers().size() == 2 || g.getPlayers().get(0).getEmail().equals(user.getEmail()) || g.getPlayers().get(1).getEmail().equals(user.getEmail())) {
-                            gameIterator.remove();
+                            remove = true;
                         }
                     }
                     catch(IndexOutOfBoundsException e) {
 
+                    }
+                    if (preferences.getInt("selected_filter", 0) != 0 && !g.getSport().getName().equals(preferences.getString("selected_filter_name", "")))
+                    {
+                        remove = true;
+                    }
+
+                    if (remove) {
+                        gameIterator.remove();
                     }
                 }
                 gamesListAdapter = new GameAdapter(games);
