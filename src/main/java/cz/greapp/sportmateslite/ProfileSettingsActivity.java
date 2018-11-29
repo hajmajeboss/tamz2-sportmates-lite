@@ -1,10 +1,13 @@
 package cz.greapp.sportmateslite;
 
 import android.Manifest;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Build;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
@@ -20,6 +23,14 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+
+import java.io.ByteArrayOutputStream;
 
 import cz.greapp.sportmateslite.Data.Models.User;
 
@@ -135,29 +146,61 @@ public class ProfileSettingsActivity extends AppCompatActivity {
 
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.profile_settings_nav, menu);
-        return true;
-    }
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == RESULT_TAKE_PHOTO) {
+            if (resultCode == RESULT_OK) {
+                Bitmap photo = (Bitmap) data.getExtras().get("data");
+                FirebaseStorage storage = FirebaseStorage.getInstance();
+                StorageReference storageRef = storage.getReference().child(user.getId() + ".jpg");
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+                ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                photo.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+                byte[] photoBytes = stream.toByteArray();
 
-        int id = item.getItemId();
-
-        if (id == R.id.profile_settings_navigation_save) {
-            Intent ret = new Intent();
-            Bundle bundle = new Bundle();
-            bundle.putSerializable("user", user);
-            ret.putExtras(bundle);
-            setResult(RESULT_OK, ret);
-            Toast.makeText(this, "Uloženo!", Toast.LENGTH_SHORT).show();
-            finish();
-
-            return true;
+                final ProgressDialog dlg = ProgressDialog.show(ctx, "Nahrát fotografii", "Může to trvat několik vteřin...");
+                storageRef.putBytes(photoBytes).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
+                        if (task.isSuccessful()) {
+                            dlg.dismiss();
+                        }
+                        else {
+                            Toast.makeText(ctx, "Nahrávání obrázku selhalo. Zkontrolujte připojení k internetu.", Toast.LENGTH_SHORT).show();
+                            dlg.dismiss();
+                        }
+                    }
+                });
+            }
         }
 
-        return super.onOptionsItemSelected(item);
+        if (requestCode == RESULT_LOAD_IMAGE) {
+            if (resultCode == RESULT_OK) {
+                Uri url = data.getData();
+
+                if (url == null) {
+                    Toast.makeText(ctx, "Obrázek nelze nahrát.", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                FirebaseStorage storage = FirebaseStorage.getInstance();
+                StorageReference storageRef = storage.getReference().child(user.getId() + ".jpg");
+
+                final ProgressDialog dlg = ProgressDialog.show(ctx, "Nahrát fotografii", "Může to trvat několik vteřin...");
+                storageRef.putFile(url).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
+                        if (task.isSuccessful()) {
+                            dlg.dismiss();
+                        }
+                        else {
+                            Toast.makeText(ctx, "Nahrávání obrázku selhalo. Zkontrolujte připojení k internetu.", Toast.LENGTH_SHORT).show();
+                            dlg.dismiss();
+                        }
+                    }
+                });
+            }
+        }
+
     }
 }
 

@@ -106,7 +106,18 @@ public class MainActivity extends AppCompatActivity implements ProfileFragment.O
                     fragmentTransaction.replace(R.id.fragment_container, profileFragment);
                     fragmentTransaction.commit();
 
-                    mainFab.setVisibility(View.INVISIBLE);
+                    mainFab.setVisibility(View.VISIBLE);
+                    mainFab.setImageResource(R.drawable.account_settings);
+                    mainFab.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            Intent intent = new Intent(ctx, ProfileSettingsActivity.class);
+                            Bundle extras = new Bundle();
+                            extras.putSerializable("user", user);
+                            intent.putExtras(extras);
+                            startActivity(intent);
+                        }
+                    });
                     return true;
             }
             return false;

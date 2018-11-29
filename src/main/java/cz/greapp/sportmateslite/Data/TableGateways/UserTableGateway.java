@@ -2,17 +2,14 @@ package cz.greapp.sportmateslite.Data.TableGateways;
 
 import android.support.annotation.NonNull;
 import android.util.Log;
-
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
-
 import java.util.HashMap;
 import java.util.Map;
-
 import cz.greapp.sportmateslite.Data.Models.User;
 import cz.greapp.sportmateslite.Data.OnFirebaseQueryResultListener;
 import cz.greapp.sportmateslite.Data.QueryResultObserver;
@@ -55,14 +52,6 @@ public class UserTableGateway extends TableGateway {
                 }
             }
         });
-    }
-
-    public void deleteUser() {
-
-    }
-
-    public void updateUser() {
-
     }
 
 }

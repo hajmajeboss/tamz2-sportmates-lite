@@ -47,8 +47,6 @@ public class ProfileFragment extends Fragment {
 
     ImageView profileImage;
 
-    Button profileSettingsButton;
-
     TextView nameText;
     TextView emailText;
     Context ctx;
@@ -119,6 +117,7 @@ public class ProfileFragment extends Fragment {
         nameText.setText(user.getName());
         emailText.setText(user.getEmail());
 
+        /*
         profileSettingsButton = (Button) view.findViewById(R.id.profileSettingsButton);
         profileSettingsButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -130,6 +129,7 @@ public class ProfileFragment extends Fragment {
                 startActivity(intent);
             }
         });
+        */
 
         profileImage = view.findViewById(R.id.avatarImage);
         if (user.getProfileImage() != null) {

@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -15,7 +14,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.ShareActionProvider;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -27,12 +25,10 @@ import java.util.List;
 
 import cz.greapp.sportmateslite.Data.Adapters.GameAdapter;
 import cz.greapp.sportmateslite.Data.Models.Game;
-import cz.greapp.sportmateslite.Data.Models.Sport;
 import cz.greapp.sportmateslite.Data.Models.User;
 import cz.greapp.sportmateslite.Data.OnFirebaseQueryResultListener;
 import cz.greapp.sportmateslite.Data.Parsers.GameSnapshotParser;
 import cz.greapp.sportmateslite.Data.TableGateways.GameTableGateway;
-import cz.greapp.sportmateslite.Data.TableGateways.SportTableGateway;
 import cz.greapp.sportmateslite.Data.TableGateways.TableGateway;
 import cz.greapp.sportmateslite.Listeners.RecyclerItemClickListener;
 
