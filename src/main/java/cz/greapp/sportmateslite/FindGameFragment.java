@@ -2,6 +2,7 @@ package cz.greapp.sportmateslite;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
@@ -12,7 +13,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ShareActionProvider;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -64,6 +67,9 @@ public class FindGameFragment extends Fragment implements OnFirebaseQueryResultL
     SwipeRefreshLayout swipeRefreshLayout;
 
     OnFirebaseQueryResultListener listener;
+
+    SharedPreferences preferences;
+    SharedPreferences.Editor prefEditor;
 
     public FindGameFragment() {
         // Required empty public constructor
@@ -117,10 +123,28 @@ public class FindGameFragment extends Fragment implements OnFirebaseQueryResultL
         ctx = getContext();
         listener = this;
 
+        preferences = getActivity().getSharedPreferences(getString(R.string.preferences_file_key), Context.MODE_PRIVATE);
+
         sportSpinner = (Spinner) view.findViewById(R.id.sportSpinner);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getContext(), R.array.sports_array, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         sportSpinner.setAdapter(adapter);
+        sportSpinner.setSelection(preferences.getInt("selected_filter",0));
+
+        sportSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                prefEditor = preferences.edit();
+                prefEditor.putInt("selected_filter", i);
+                prefEditor.putString("selected_filter_name", adapterView.getItemAtPosition(i).toString());
+                prefEditor.commit();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
 
         gamesListView = (RecyclerView) view.findViewById(R.id.gamesListView);
 

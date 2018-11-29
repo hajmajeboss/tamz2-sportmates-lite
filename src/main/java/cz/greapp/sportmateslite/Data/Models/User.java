@@ -1,11 +1,14 @@
 package cz.greapp.sportmateslite.Data.Models;
 
+import java.io.File;
 import java.io.Serializable;
 
 public class User implements Serializable {
     private String id;
     private String name;
     private String email;
+    private File profileImage;
+
 
     public User() { }
 
@@ -20,6 +23,14 @@ public class User implements Serializable {
 
     public String getId() {
         return id;
+    }
+
+    public File getProfileImage() {
+        return profileImage;
+    }
+
+    public void setProfileImage(File profileImage) {
+        this.profileImage = profileImage;
     }
 
     public String getName() {

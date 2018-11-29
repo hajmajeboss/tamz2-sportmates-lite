@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -18,12 +19,19 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.common.collect.Table;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.storage.FileDownloadTask;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 import cz.greapp.sportmateslite.Data.Models.User;
@@ -208,8 +216,31 @@ public class MainActivity extends AppCompatActivity implements ProfileFragment.O
                     user = new User(ref.getString("name"), ref.getString("email"));
                     user.setId(ref.getId());
 
+                    FirebaseStorage storageRef = FirebaseStorage.getInstance();
+
+                    StorageReference gsReference = storageRef.getReferenceFromUrl("gs://sportmateslite.appspot.com/" + ref.getId() +  ".jpg");
+
+                    try {
+                        final File localFile = File.createTempFile("images", "jpg");
+                        gsReference.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+                            @Override
+                            public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                                user.setProfileImage(localFile);
+                                progressDialog.dismiss();
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception exception) {
+                                progressDialog.dismiss();
+                            }
+                        });
+                    }
+                    catch (IOException e) {
+
+                    }
+
                 }
-                progressDialog.dismiss();
+
             }
             else {
                 Toast.makeText(ctx, "Chyba", Toast.LENGTH_SHORT).show();

@@ -76,13 +76,14 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/nameText" />
 
-    <ImageView
+    <com.mikhaellopez.circularimageview.CircularImageView
         android:id="@+id/avatarImage"
         android:layout_width="94dp"
         android:layout_height="93dp"
         android:layout_marginTop="32dp"
         android:layout_marginEnd="32dp"
-        android:src="@android:drawable/sym_def_app_icon"
+        android:src="@drawable/user_empty"
+        app:civ_border_width="0dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 

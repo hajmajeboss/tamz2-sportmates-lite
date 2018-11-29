@@ -132,29 +132,9 @@ public class ProfileFragment extends Fragment {
         });
 
         profileImage = view.findViewById(R.id.avatarImage);
-
-        storageRef = FirebaseStorage.getInstance();
-
-        StorageReference gsReference = storageRef.getReferenceFromUrl("gs://sportmateslite.appspot.com/" + ((MainActivity)getActivity()).getUser().getId() +  ".jpg");
-
-        try {
-            final File localFile = File.createTempFile("images", "jpg");
-            gsReference.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
-                @Override
-                public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
-                    profileImage.setImageBitmap(BitmapFactory.decodeFile(localFile.getAbsolutePath()));
-                }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception exception) {
-                    // Handle any errors
-                }
-            });
+        if (user.getProfileImage() != null) {
+            profileImage.setImageBitmap(BitmapFactory.decodeFile(user.getProfileImage().getAbsolutePath()));
         }
-        catch (IOException e) {
-
-        }
-
 
     }
 
