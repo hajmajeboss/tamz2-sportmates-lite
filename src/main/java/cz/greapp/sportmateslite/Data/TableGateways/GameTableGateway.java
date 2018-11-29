@@ -60,7 +60,9 @@ public class GameTableGateway extends TableGateway {
     }
 
     public void putGame(final OnFirebaseQueryResultListener listener, final int requestCode, Game g) {
-        QueryResultObserver.getInstance().attachListener(listener);
+        if (listener != null) {
+            QueryResultObserver.getInstance().attachListener(listener);
+        }
         Map<String, Object> game = new HashMap<>();
         game.put("date", g.getDate());
         game.put("time_from", g.getTimeFrom());
@@ -87,5 +89,48 @@ public class GameTableGateway extends TableGateway {
         });
     }
 
+    public void removeGame(final OnFirebaseQueryResultListener listener, final int requestCode, Game g) {
+        if (listener != null) {
+            QueryResultObserver.getInstance().attachListener(listener);
+        }
+
+        db.collection("games").document(g.getId()).delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isSuccessful()) {
+                    QueryResultObserver.getInstance().firebaseQueryResult(RESULT_OK, requestCode, null);
+                }
+                else {
+                    QueryResultObserver.getInstance().firebaseQueryResult(RESULT_ERR, requestCode, null);
+                }
+            }
+        });
+    }
+
+    public void addSecondPlayer(final OnFirebaseQueryResultListener listener, final int requestCode, Game g, User u) {
+        if (listener != null) {
+            QueryResultObserver.getInstance().attachListener(listener);
+        }
+
+        Map<String, Object> game = new HashMap<>();
+        game.put("player2_name", u.getName());
+        game.put("player2_email", u.getEmail());
+        List<String> emails = new ArrayList<>();
+        emails.add(g.getPlayers().get(0).getEmail());
+        emails.add(u.getEmail());
+        game.put("player_emails", emails);
+
+        db.collection("games").document(g.getId()).update(game).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isSuccessful()) {
+                    QueryResultObserver.getInstance().firebaseQueryResult(RESULT_OK, requestCode, null);
+                }
+                else {
+                    QueryResultObserver.getInstance().firebaseQueryResult(RESULT_ERR, requestCode, null);
+                }
+            }
+        });
+    }
 
 }

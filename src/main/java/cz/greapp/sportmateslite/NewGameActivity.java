@@ -3,6 +3,7 @@ package cz.greapp.sportmateslite;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AppCompatActivity;
@@ -40,6 +41,8 @@ public class NewGameActivity extends AppCompatActivity implements OnFirebaseQuer
     OnFirebaseQueryResultListener listener;
     Context ctx;
 
+    SharedPreferences preferences;
+
     User user;
 
     public static final int REQUEST_NEW_GAME = 422;
@@ -56,7 +59,9 @@ public class NewGameActivity extends AppCompatActivity implements OnFirebaseQuer
         setSupportActionBar(toolbar);
 
 
-        user = (User)getIntent().getSerializableExtra("user");
+        preferences = getSharedPreferences(getString(R.string.preferences_file_key), Context.MODE_PRIVATE);
+        user = new User(preferences.getString("username", null), preferences.getString("useremail", null));
+        user.setId(preferences.getString("userid", null));
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);

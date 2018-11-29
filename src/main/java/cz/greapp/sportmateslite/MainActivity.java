@@ -216,6 +216,12 @@ public class MainActivity extends AppCompatActivity implements ProfileFragment.O
                     user = new User(ref.getString("name"), ref.getString("email"));
                     user.setId(ref.getId());
 
+                    prefEdit = preferences.edit();
+                    prefEdit.putString("username", user.getName());
+                    prefEdit.putString("useremail", user.getEmail());
+                    prefEdit.putString("userid", user.getId());
+                    prefEdit.commit();
+
                     FirebaseStorage storageRef = FirebaseStorage.getInstance();
 
                     StorageReference gsReference = storageRef.getReferenceFromUrl("gs://sportmateslite.appspot.com/" + ref.getId() +  ".jpg");

@@ -1,7 +1,9 @@
 package cz.greapp.sportmateslite;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ShareCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -11,9 +13,16 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.google.firebase.firestore.QuerySnapshot;
 
 import cz.greapp.sportmateslite.Data.Adapters.PlayerAdapter;
 import cz.greapp.sportmateslite.Data.Models.Game;
+import cz.greapp.sportmateslite.Data.Models.User;
+import cz.greapp.sportmateslite.Data.OnFirebaseQueryResultListener;
+import cz.greapp.sportmateslite.Data.TableGateways.GameTableGateway;
+import cz.greapp.sportmateslite.Data.TableGateways.TableGateway;
 import cz.greapp.sportmateslite.Listeners.RecyclerItemClickListener;
 
 public class GameActivity extends AppCompatActivity {
@@ -27,8 +36,11 @@ public class GameActivity extends AppCompatActivity {
     RecyclerView.Adapter playersListAdapter;
     RecyclerView.LayoutManager playersListLayoutManager;
     Game game;
+    User user;
     Context ctx;
     Activity activity;
+
+    SharedPreferences preferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +54,12 @@ public class GameActivity extends AppCompatActivity {
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
+
+        //Načtení uživatele
+        preferences = getSharedPreferences(getString(R.string.preferences_file_key), Context.MODE_PRIVATE);
+        user = new User(preferences.getString("username", null), preferences.getString("useremail", null));
+        user.setId(preferences.getString("userid", null));
+
 
         Bundle bundle = getIntent().getExtras();
         game = (Game)bundle.getSerializable("game");
@@ -82,12 +100,79 @@ public class GameActivity extends AppCompatActivity {
         );
 
         joinFab = (FloatingActionButton) findViewById(R.id.joinFab);
-        joinFab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        });
+
+        if (game.getPlayers().size() == 1 && user.getName() != null && user.getEmail() != null && !game.getPlayers().get(0).getEmail().equals(user.getEmail())) {
+            joinFab.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    final ProgressDialog dlg = ProgressDialog.show(ctx, "Přidat se", "Může to trvat několik vteřin...");
+                    GameTableGateway gw = new GameTableGateway();
+                    gw.addSecondPlayer(new OnFirebaseQueryResultListener() {
+                        @Override
+                        public void onFirebaseQueryResult(int resultCode, int requestCode, QuerySnapshot result) {
+                            if (resultCode == TableGateway.RESULT_OK) {
+                                dlg.dismiss();
+                                finish();
+                            }
+                            else {
+                                dlg.dismiss();
+                                Toast.makeText(ctx, "Chyba při přidání uživatele do hry. Zkontrolujte, že jste připojeni k internetu.", Toast.LENGTH_LONG).show();
+                            }
+                        }
+                    }, 500, game, user);
+                }
+            });
+        }
+        //moje hra
+        else if (game.getPlayers().size() == 2 && game.getPlayers().get(1).getEmail().equals(user.getEmail())) {
+            joinFab.setImageResource(R.drawable.account_remove_outline);
+            joinFab.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    final ProgressDialog dlg = ProgressDialog.show(ctx, "Opustit hru", "Může to trvat několik vteřin...");
+                    GameTableGateway gw = new GameTableGateway();
+                    gw.addSecondPlayer(new OnFirebaseQueryResultListener() {
+                        @Override
+                        public void onFirebaseQueryResult(int resultCode, int requestCode, QuerySnapshot result) {
+                            if (resultCode == TableGateway.RESULT_OK) {
+                                dlg.dismiss();
+                                finish();
+                            }
+                            else {
+                                dlg.dismiss();
+                                Toast.makeText(ctx, "Chyba při opouštění hry. Zkontrolujte, že jste připojeni k internetu.", Toast.LENGTH_LONG).show();
+                            }
+                        }
+                    }, 501, game, new User(null, null));
+                }
+            });
+        }
+        else if (game.getPlayers().get(0).getEmail().equals(user.getEmail())) {
+            joinFab.setImageResource(R.drawable.trash_can_outline);
+            joinFab.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    final ProgressDialog dlg = ProgressDialog.show(ctx, "Smazat hru", "Může to trvat několik vteřin...");
+                    GameTableGateway gw = new GameTableGateway();
+                    gw.removeGame(new OnFirebaseQueryResultListener() {
+                        @Override
+                        public void onFirebaseQueryResult(int resultCode, int requestCode, QuerySnapshot result) {
+                            if (resultCode == TableGateway.RESULT_OK) {
+                                dlg.dismiss();
+                                finish();
+                            }
+                            else {
+                                dlg.dismiss();
+                                Toast.makeText(ctx, "Chyba při mazání hry. Zkontrolujte, že jste připojeni k internetu.", Toast.LENGTH_LONG).show();
+                            }
+                        }
+                    }, 502, game);
+                }
+            });
+        }
+        else {
+            joinFab.setVisibility(View.GONE);
+        }
 
     }
 
