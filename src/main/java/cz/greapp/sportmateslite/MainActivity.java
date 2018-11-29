@@ -54,6 +54,9 @@ public class MainActivity extends AppCompatActivity implements ProfileFragment.O
     Toolbar toolbar;
 
     public static final int NEW_GAME_REQUEST = 0;
+    public static final int GAME_ADD_PLAYER = 500;
+    public static final int GAME_REMOVE_PLAYER = 501;
+    public static final int GAME_REMOVE_GAME = 502;
     public static final int REQUEST_USER_BY_EMAIL = 100;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
@@ -254,6 +257,12 @@ public class MainActivity extends AppCompatActivity implements ProfileFragment.O
             }
         }
 
+        if (requestCode == GAME_ADD_PLAYER || requestCode == GAME_REMOVE_PLAYER || requestCode == GAME_REMOVE_GAME) {
+            GameTableGateway gw = new GameTableGateway();
+            gw.getGames(null, FindGameFragment.REQUEST_GAMES);
+            gw.getUserGames(null, MyGamesFragment.REQUEST_USER_GAMES, user);
+        }
+
     }
 
     @Override
@@ -264,5 +273,6 @@ public class MainActivity extends AppCompatActivity implements ProfileFragment.O
                 gw.getGames(null, FindGameFragment.REQUEST_GAMES);
             }
         }
+
     }
 }

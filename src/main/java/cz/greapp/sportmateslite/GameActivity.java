@@ -112,6 +112,7 @@ public class GameActivity extends AppCompatActivity {
                         public void onFirebaseQueryResult(int resultCode, int requestCode, QuerySnapshot result) {
                             if (resultCode == TableGateway.RESULT_OK) {
                                 dlg.dismiss();
+                                setResult(RESULT_OK);
                                 finish();
                             }
                             else {
@@ -136,6 +137,7 @@ public class GameActivity extends AppCompatActivity {
                         public void onFirebaseQueryResult(int resultCode, int requestCode, QuerySnapshot result) {
                             if (resultCode == TableGateway.RESULT_OK) {
                                 dlg.dismiss();
+                                setResult(RESULT_OK);
                                 finish();
                             }
                             else {
@@ -159,6 +161,7 @@ public class GameActivity extends AppCompatActivity {
                         public void onFirebaseQueryResult(int resultCode, int requestCode, QuerySnapshot result) {
                             if (resultCode == TableGateway.RESULT_OK) {
                                 dlg.dismiss();
+                                setResult(RESULT_OK);
                                 finish();
                             }
                             else {

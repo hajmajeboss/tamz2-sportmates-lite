@@ -22,11 +22,13 @@ import android.widget.Toast;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import cz.greapp.sportmateslite.Data.Adapters.GameAdapter;
 import cz.greapp.sportmateslite.Data.Models.Game;
 import cz.greapp.sportmateslite.Data.Models.Sport;
+import cz.greapp.sportmateslite.Data.Models.User;
 import cz.greapp.sportmateslite.Data.OnFirebaseQueryResultListener;
 import cz.greapp.sportmateslite.Data.Parsers.GameSnapshotParser;
 import cz.greapp.sportmateslite.Data.TableGateways.GameTableGateway;
@@ -213,6 +215,20 @@ public class FindGameFragment extends Fragment implements OnFirebaseQueryResultL
             if (resultCode == TableGateway.RESULT_OK) {
                 GameSnapshotParser gsp = new GameSnapshotParser();
                 games = gsp.parseQuerySnapshot(result);
+                Iterator<Game> gameIterator = games.iterator();
+                Game g;
+                User user = new User(preferences.getString("username", null), preferences.getString("useremail", null));
+                while (gameIterator.hasNext()) {
+                    g = gameIterator.next();
+                    try {
+                        if (g.getPlayers().size() == 2 || g.getPlayers().get(0).getEmail().equals(user.getEmail()) || g.getPlayers().get(1).getEmail().equals(user.getEmail())) {
+                            gameIterator.remove();
+                        }
+                    }
+                    catch(IndexOutOfBoundsException e) {
+
+                    }
+                }
                 gamesListAdapter = new GameAdapter(games);
                 gamesListView.setAdapter(gamesListAdapter);
                 swipeRefreshLayout.setRefreshing(false);
