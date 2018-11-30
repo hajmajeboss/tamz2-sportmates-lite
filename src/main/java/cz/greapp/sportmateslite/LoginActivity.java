@@ -56,11 +56,12 @@ public class LoginActivity extends AppCompatActivity {
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                progressDialog = ProgressDialog.show(ctx, "Přihlásit se", "Může to trvat několik vteřin...");
+
                 String email = emailField.getText().toString();
                 String password = passwordField.getText().toString();
 
                 if (!email.equals("") && !password.equals("")) {
+                    progressDialog = ProgressDialog.show(ctx, "Přihlásit se", "Může to trvat několik vteřin...");
                     auth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                        @Override
                        public void onComplete(@NonNull Task<AuthResult> task) {
