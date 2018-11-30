@@ -9,5 +9,6 @@ Aplikace umožńující nalézt spoluhráče pro určený sport - např. badmint
 - práce s FireBase Cloud Storage - asynchronní stahování obrázků, nahrávání obrázků na internet
 - autentifikace - login, registrace nového uživatele
 
-![Alt text](screen1.png?raw=true "Title") ![Alt text](screen2.png?raw=true "Title")
-![Alt text](screen3.png?raw=true "Title") ![Alt text](screen4.png?raw=true "Title")
+### Screenshoty
+![Alt text](screen1.png?raw=true "Screenshot") ![Alt text](screen2.png?raw=true "Screenshot")
+![Alt text](screen3.png?raw=true "Screenshot") ![Alt text](screen4.png?raw=true "Screenshot")
