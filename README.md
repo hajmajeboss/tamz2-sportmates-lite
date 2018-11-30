@@ -4,6 +4,9 @@
 ### Popis
 Aplikace umožńující nalézt spoluhráče pro určený sport - např. badminton, posilování, squash. 
 
+### Sestavení
+Pro úspěšné sestavení projektu je nutný soubor obsahujicí Google API Key a další citlivé údaje. Tento soubor není součástí tohoto repozitáře. Pro poskytnutí souboru mě prosím kontaktujte.
+
 ### Featury
 - pokročilé GUI (fragmenty, taby, recyclerviews)
 - shared pref. pro ukládání lokálního nastavení 
