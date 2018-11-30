@@ -1,6 +1,7 @@
 # Sportmates Lite
 **Projekt do předmětu TAMZ2** - Petr Heinz, HEI0051
 
+### Popis
 Aplikace umožńující nalézt spoluhráče pro určený sport - např. badminton, posilování, squash. 
 - pokročilé GUI (fragmenty, taby, recyclerviews)
 - shared pref. pro ukládání lokálního nastavení 
