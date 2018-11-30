@@ -3,6 +3,8 @@
 
 ### Popis
 Aplikace umožńující nalézt spoluhráče pro určený sport - např. badminton, posilování, squash. 
+
+### Featury
 - pokročilé GUI (fragmenty, taby, recyclerviews)
 - shared pref. pro ukládání lokálního nastavení 
 - práce s fotoaparátem
