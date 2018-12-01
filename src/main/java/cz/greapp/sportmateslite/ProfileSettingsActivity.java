@@ -9,6 +9,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputEditText;
@@ -31,6 +32,8 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.util.Date;
 
 import cz.greapp.sportmateslite.Data.Models.User;
 
@@ -46,6 +49,8 @@ public class ProfileSettingsActivity extends AppCompatActivity {
     User user;
 
     Context ctx;
+
+    Uri photoOutputUri;
 
     public static final int RESULT_LOAD_IMAGE = 100;
     public static final int REQUEST_CAMERA_PERMISSION = 0;
@@ -86,6 +91,10 @@ public class ProfileSettingsActivity extends AppCompatActivity {
                         requestPermissions(new String[]{Manifest.permission.CAMERA}, ProfileSettingsActivity.REQUEST_CAMERA_PERMISSION);
                     } else {
                         Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                        File file = new File(Environment.getExternalStorageDirectory(),
+                                "sportmates_" + user.getId() + "_" + System.currentTimeMillis() + ".jpg");
+                        photoOutputUri = Uri.fromFile(file);
+                        cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoOutputUri);
                         startActivityForResult(cameraIntent, ProfileSettingsActivity.RESULT_TAKE_PHOTO);
                     }
                 }
@@ -149,16 +158,16 @@ public class ProfileSettingsActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == RESULT_TAKE_PHOTO) {
             if (resultCode == RESULT_OK) {
-                Bitmap photo = (Bitmap) data.getExtras().get("data");
+
+                if (photoOutputUri == null) {
+                    return;
+                }
+
                 FirebaseStorage storage = FirebaseStorage.getInstance();
                 StorageReference storageRef = storage.getReference().child(user.getId() + ".jpg");
 
-                ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                photo.compress(Bitmap.CompressFormat.JPEG, 100, stream);
-                byte[] photoBytes = stream.toByteArray();
-
                 final ProgressDialog dlg = ProgressDialog.show(ctx, "Nahrát fotografii", "Může to trvat několik vteřin...");
-                storageRef.putBytes(photoBytes).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+                storageRef.putFile(photoOutputUri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
                         if (task.isSuccessful()) {

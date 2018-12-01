@@ -3,6 +3,7 @@ package cz.greapp.sportmateslite;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ShareCompat;
@@ -11,6 +12,8 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -83,13 +86,16 @@ public class GameActivity extends AppCompatActivity {
         playersListView.addOnItemTouchListener(
                 new RecyclerItemClickListener(ctx, playersListView ,new RecyclerItemClickListener.OnItemClickListener() {
                     @Override public void onItemClick(View view, int position) {
-                        ShareCompat.IntentBuilder.from(activity)
+
+                     /*   ShareCompat.IntentBuilder.from(activity)
                                 .setType("message/rfc822")
                                 .addEmailTo(game.getPlayers().get(position).getEmail())
                                 .setSubject("Zpráva z aplikace Sportmates")
                                 .setText(game.getSport().getName() + " - " + game.getPlace() + " - " + game.getDate() + " " + game.getTimeFrom() + "-" + game.getTimeTo() + "\n\n" + "Text zprávy: ")
                                 .setChooserTitle("Vyberte emailového klienta:")
-                                .startChooser();
+                                .startChooser();*/
+
+
 
                     }
 
@@ -183,5 +189,24 @@ public class GameActivity extends AppCompatActivity {
     public boolean onSupportNavigateUp() {
         onBackPressed();
         return true;
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.game_nav, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        int id = item.getItemId();
+
+        if (id == R.id.navigation_games_messages) {
+            Intent intent = new Intent(ctx, ConversationActivity.class);
+            startActivity(intent);
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 }

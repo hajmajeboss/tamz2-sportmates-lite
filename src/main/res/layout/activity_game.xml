@@ -18,7 +18,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:theme="@style/ToolbarColoredBackArrow"
-        app:title="Sportmates"
+        app:title="@string/app_name"
         app:titleTextColor="@android:color/white" />
 
     <TextView
@@ -70,7 +70,8 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/divider15" />
+        app:layout_constraintTop_toBottomOf="@+id/divider15"
+        tools:listitem="@layout/player_list_item" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/joinFab"

@@ -42,11 +42,11 @@
         android:elevation="4dp"
         android:minHeight="?attr/actionBarSize"
         android:textAlignment="center"
-        app:theme="@style/ToolbarColoredBackArrow"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:title="Sportmates"
+        app:theme="@style/ToolbarColoredBackArrow"
+        app:title="@string/app_name"
         app:titleTextColor="@android:color/white" />
 
     <TextView

@@ -35,6 +35,12 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/aboutToolbar">
 
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="191dp"
+            android:layout_height="170dp"
+            app:srcCompat="@drawable/logo" />
+
         <TextView
             android:id="@+id/gra"
             android:layout_width="match_parent"
