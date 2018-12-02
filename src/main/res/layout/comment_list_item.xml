@@ -20,6 +20,17 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
+        android:id="@+id/playerNameText2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:text="21.12.2018 14:18"
+        android:textAppearance="@style/TextAppearance.AppCompat.Small"
+        android:textSize="12sp"
+        app:layout_constraintStart_toEndOf="@+id/avatarImage"
+        app:layout_constraintTop_toBottomOf="@+id/playerNameText" />
+
+    <TextView
         android:id="@+id/playerEmailText"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -29,7 +40,7 @@
         android:text="Ahoj, sejdeme se tedy toho patnácthé? Díky moc za odpověď, potřeboval bych to cědět co nejdřív..."
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/avatarImage"
-        app:layout_constraintTop_toBottomOf="@+id/playerNameText" />
+        app:layout_constraintTop_toBottomOf="@+id/playerNameText2" />
 
     <View
         android:id="@+id/divider17"
