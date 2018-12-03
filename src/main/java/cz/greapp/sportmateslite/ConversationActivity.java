@@ -13,6 +13,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
@@ -55,6 +56,7 @@ public class ConversationActivity extends AppCompatActivity implements OnFirebas
     SwipeRefreshLayout swipeRefreshLayout;
 
     OnFirebaseQueryResultListener listener;
+
 
     SharedPreferences preferences;
     SharedPreferences.Editor prefEditor;
@@ -130,6 +132,7 @@ public class ConversationActivity extends AppCompatActivity implements OnFirebas
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
+
 
         updateThread = new Thread() {
 

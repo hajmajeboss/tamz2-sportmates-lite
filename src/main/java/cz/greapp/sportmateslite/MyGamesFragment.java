@@ -15,12 +15,19 @@ import android.widget.Toast;
 
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 import cz.greapp.sportmateslite.Data.Adapters.GameAdapter;
 import cz.greapp.sportmateslite.Data.Models.Game;
 import cz.greapp.sportmateslite.Data.Models.Sport;
+import cz.greapp.sportmateslite.Data.Models.User;
 import cz.greapp.sportmateslite.Data.OnFirebaseQueryResultListener;
 import cz.greapp.sportmateslite.Data.Parsers.GameSnapshotParser;
 import cz.greapp.sportmateslite.Data.TableGateways.GameTableGateway;
@@ -192,6 +199,30 @@ public class MyGamesFragment extends Fragment implements OnFirebaseQueryResultLi
             if (resultCode == TableGateway.RESULT_OK) {
                 GameSnapshotParser gsp = new GameSnapshotParser();
                 games = gsp.parseQuerySnapshot(result);
+
+                Iterator<Game> gameIterator = games.iterator();
+                Game g;
+
+                SimpleDateFormat sdf =  new SimpleDateFormat("dd.MM.yyyy HH:mm");
+                Date now = Calendar.getInstance().getTime();
+
+                while (gameIterator.hasNext()) {
+                    boolean remove = false;
+                    g = gameIterator.next();
+                    try {
+                        if (sdf.parse(g.getDate() + " " + g.getTimeTo()).before(now)) {
+                            remove = true;
+                        }
+
+                        if (remove) {
+                            gameIterator.remove();
+                        }
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                Collections.sort(games);
                 myGamesAdapter = new GameAdapter(games);
                 myGamesListView.setAdapter(myGamesAdapter);
                 swipeRefreshLayout.setRefreshing(false);

@@ -19,7 +19,12 @@ import android.widget.Toast;
 
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -218,6 +223,9 @@ public class FindGameFragment extends Fragment implements OnFirebaseQueryResultL
                 Iterator<Game> gameIterator = games.iterator();
                 Game g;
                 User user = new User(preferences.getString("username", null), preferences.getString("useremail", null));
+                SimpleDateFormat sdf =  new SimpleDateFormat("dd.MM.yyyy HH:mm");
+                Date now = Calendar.getInstance().getTime();
+
                 while (gameIterator.hasNext()) {
                     boolean remove = false;
                     g = gameIterator.next();
@@ -234,10 +242,20 @@ public class FindGameFragment extends Fragment implements OnFirebaseQueryResultL
                         remove = true;
                     }
 
-                    if (remove) {
-                        gameIterator.remove();
+                    try {
+                        if (sdf.parse(g.getDate() + " " + g.getTimeFrom()).before(now)) {
+                            remove = true;
+                        }
+
+                        if (remove) {
+                            gameIterator.remove();
+                        }
+                    } catch (ParseException e) {
+                        e.printStackTrace();
                     }
                 }
+
+                Collections.sort(games);
                 gamesListAdapter = new GameAdapter(games);
                 gamesListView.setAdapter(gamesListAdapter);
                 swipeRefreshLayout.setRefreshing(false);

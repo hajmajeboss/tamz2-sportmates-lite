@@ -15,6 +15,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -36,6 +37,7 @@ public class GameActivity extends AppCompatActivity {
     TextView placeText;
     TextView dateTimeText;
     FloatingActionButton joinFab;
+    Button showCommentsButton;
     RecyclerView playersListView;
     RecyclerView.Adapter playersListAdapter;
     RecyclerView.LayoutManager playersListLayoutManager;
@@ -75,6 +77,19 @@ public class GameActivity extends AppCompatActivity {
         sportText.setText(game.getSport().getName());
         placeText.setText(game.getPlace());
         dateTimeText.setText(game.getDate() + " | od " + game.getTimeFrom() + " | do " + game.getTimeTo());
+
+
+        showCommentsButton = findViewById(R.id.showCommentsButton);
+        showCommentsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                    Intent intent = new Intent(ctx, ConversationActivity.class);
+                    Bundle extras = new Bundle();
+                    extras.putSerializable("game", game);
+                    intent.putExtras(extras);
+                    startActivity(intent);
+            }
+        });
 
         playersListView = (RecyclerView) findViewById(R.id.playersListView);
 
@@ -139,7 +154,7 @@ public class GameActivity extends AppCompatActivity {
                 public void onClick(View view) {
                     final ProgressDialog dlg = ProgressDialog.show(ctx, "Opustit hru", "Může to trvat několik vteřin...");
                     GameTableGateway gw = new GameTableGateway();
-                    gw.addSecondPlayer(new OnFirebaseQueryResultListener() {
+                    gw.removeSecondPlayer(new OnFirebaseQueryResultListener() {
                         @Override
                         public void onFirebaseQueryResult(int resultCode, int requestCode, QuerySnapshot result) {
                             if (resultCode == TableGateway.RESULT_OK) {
@@ -152,7 +167,7 @@ public class GameActivity extends AppCompatActivity {
                                 Toast.makeText(ctx, "Chyba při opouštění hry. Zkontrolujte, že jste připojeni k internetu.", Toast.LENGTH_LONG).show();
                             }
                         }
-                    }, 501, game, new User(null, null));
+                    }, 501, game, user);
                 }
             });
         }
@@ -194,7 +209,6 @@ public class GameActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.game_nav, menu);
         getMenuInflater().inflate(R.menu.main_nav, menu);
         return true;
     }
@@ -203,14 +217,6 @@ public class GameActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
 
         int id = item.getItemId();
-
-        if (id == R.id.navigation_games_messages) {
-            Intent intent = new Intent(ctx, ConversationActivity.class);
-            Bundle extras = new Bundle();
-            extras.putSerializable("game", game);
-            intent.putExtras(extras);
-            startActivity(intent);
-        }
 
         if (id == R.id.main_navigation_about) {
             Intent intent = new Intent(ctx, AboutActivity.class);

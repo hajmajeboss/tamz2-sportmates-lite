@@ -147,11 +147,11 @@ public class GameTableGateway extends TableGateway {
         }
 
         Map<String, Object> game = new HashMap<>();
-        game.put("player2_name", u.getName());
-        game.put("player2_email", u.getEmail());
+        game.put("player2_name", null);
+        game.put("player2_email",null);
         List<String> emails = new ArrayList<>();
         emails.add(g.getPlayers().get(0).getEmail());
-        emails.add(u.getEmail());
+        emails.add(null);
         game.put("player_emails", emails);
 
         db.collection("games").document(g.getId()).update(game).addOnCompleteListener(new OnCompleteListener<Void>() {

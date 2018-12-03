@@ -1,10 +1,15 @@
 package cz.greapp.sportmateslite.Data.Models;
 
+import android.support.annotation.NonNull;
+
 import java.io.Serializable;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
-public class Game implements Serializable {
+public class Game implements Serializable, Comparable<Game> {
     private String id;
     private Sport sport;
     private String place;
@@ -51,7 +56,7 @@ public class Game implements Serializable {
     }
 
     public String getDate() {
-        return date;
+        return date.replace("/", ".");
     }
 
     public String getPlace() {
@@ -86,4 +91,16 @@ public class Game implements Serializable {
         this.timeTo = timeTo;
     }
 
+    @Override
+    public int compareTo(@NonNull Game game) {
+        SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm");
+        try {
+            Date d = sdf.parse(this.getDate() + " " + this.getTimeFrom());
+            Date d1 = sdf.parse(game.getDate() + " " + game.getTimeFrom());
+            return d.compareTo(d1);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return 0;
+        }
+    }
 }
