@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.firestore.QuerySnapshot;
@@ -36,6 +37,8 @@ import cz.greapp.sportmateslite.Data.Parsers.GameSnapshotParser;
 import cz.greapp.sportmateslite.Data.TableGateways.GameTableGateway;
 import cz.greapp.sportmateslite.Data.TableGateways.TableGateway;
 import cz.greapp.sportmateslite.Listeners.RecyclerItemClickListener;
+
+import static android.view.View.GONE;
 
 
 /**
@@ -66,6 +69,8 @@ public class FindGameFragment extends Fragment implements OnFirebaseQueryResultL
     RecyclerView.LayoutManager gamesListLayoutManager;
     List<Game> games;
     Context ctx;
+
+    TextView noGameText;
 
     SwipeRefreshLayout swipeRefreshLayout;
 
@@ -133,6 +138,8 @@ public class FindGameFragment extends Fragment implements OnFirebaseQueryResultL
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         sportSpinner.setAdapter(adapter);
         sportSpinner.setSelection(preferences.getInt("selected_filter",0));
+
+        noGameText = view.findViewById(R.id.noGamesTextView);
 
         sportSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -255,6 +262,15 @@ public class FindGameFragment extends Fragment implements OnFirebaseQueryResultL
                     }
                 }
 
+                if (games.size() == 0) {
+                    gamesListView.setVisibility(GONE);
+                    noGameText.setVisibility(View.VISIBLE);
+                }
+
+                else {
+                    gamesListView.setVisibility(View.VISIBLE);
+                    noGameText.setVisibility(GONE);
+                }
                 Collections.sort(games);
                 gamesListAdapter = new GameAdapter(games);
                 gamesListView.setAdapter(gamesListAdapter);

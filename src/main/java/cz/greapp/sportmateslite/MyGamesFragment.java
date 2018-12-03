@@ -11,6 +11,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.firestore.QuerySnapshot;
@@ -33,6 +34,8 @@ import cz.greapp.sportmateslite.Data.Parsers.GameSnapshotParser;
 import cz.greapp.sportmateslite.Data.TableGateways.GameTableGateway;
 import cz.greapp.sportmateslite.Data.TableGateways.TableGateway;
 import cz.greapp.sportmateslite.Listeners.RecyclerItemClickListener;
+
+import static android.view.View.GONE;
 
 
 /**
@@ -62,6 +65,8 @@ public class MyGamesFragment extends Fragment implements OnFirebaseQueryResultLi
     RecyclerView.Adapter myGamesAdapter;
     List<Game> games;
     Context ctx;
+
+    TextView noGamesText;
 
     SwipeRefreshLayout swipeRefreshLayout;
     OnFirebaseQueryResultListener listener;
@@ -118,6 +123,7 @@ public class MyGamesFragment extends Fragment implements OnFirebaseQueryResultLi
         ctx = getContext();
         listener = this;
 
+        noGamesText = view.findViewById(R.id.noMyGamesText);
 
         myGamesListView = (RecyclerView) view.findViewById(R.id.myGamesListView);
 
@@ -220,6 +226,16 @@ public class MyGamesFragment extends Fragment implements OnFirebaseQueryResultLi
                     } catch (ParseException e) {
                         e.printStackTrace();
                     }
+                }
+
+                if (games.size() == 0) {
+                    myGamesListView.setVisibility(GONE);
+                    noGamesText.setVisibility(View.VISIBLE);
+                }
+
+                else {
+                    myGamesListView.setVisibility(View.VISIBLE);
+                    noGamesText.setVisibility(GONE);
                 }
 
                 Collections.sort(games);
