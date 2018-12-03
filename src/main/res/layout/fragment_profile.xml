@@ -56,10 +56,10 @@
                 android:textAppearance="@style/TextAppearance.AppCompat.Large"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/avatarImage" />
+                app:layout_constraintTop_toBottomOf="@+id/senderAvatar" />
 
             <com.mikhaellopez.circularimageview.CircularImageView
-                android:id="@+id/avatarImage"
+                android:id="@+id/senderAvatar"
                 android:layout_width="164dp"
                 android:layout_height="164dp"
                 android:layout_marginStart="8dp"

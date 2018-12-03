@@ -1,31 +1,18 @@
 package cz.greapp.sportmateslite;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
-import com.google.protobuf.compiler.PluginProtos;
-
-import java.io.File;
-import java.io.IOException;
 
 import cz.greapp.sportmateslite.Data.Models.User;
 
@@ -131,7 +118,7 @@ public class ProfileFragment extends Fragment {
         });
         */
 
-        profileImage = view.findViewById(R.id.avatarImage);
+        profileImage = view.findViewById(R.id.senderAvatar);
         if (user.getProfileImage() != null) {
             profileImage.setImageBitmap(BitmapFactory.decodeFile(user.getProfileImage().getAbsolutePath()));
         }

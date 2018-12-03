@@ -36,4 +36,8 @@ public class QueryResultObserver {
         }
     }
 
+    public void removeListener(OnFirebaseQueryResultListener listener) {
+        observables.remove(listener);
+    }
+
 }

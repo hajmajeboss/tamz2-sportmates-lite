@@ -35,6 +35,22 @@ public class UserTableGateway extends TableGateway {
         });
     }
 
+    /*
+    public void getUserById(OnFirebaseQueryResultListener listener, String id, final int requestCode) {
+        QueryResultObserver.getInstance().attachListener(listener);
+        db.collection("users").document(id).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    QueryResultObserver.getInstance().firebaseQueryResult(RESULT_OK, requestCode, task.getResult());
+                }
+                else {
+                    QueryResultObserver.getInstance().firebaseQueryResult(RESULT_ERR, requestCode, null);
+                }
+            }
+        });
+    }*/
+
     public void putUser(OnFirebaseQueryResultListener listener, User u, final int requestCode) {
         QueryResultObserver.getInstance().attachListener(listener);
         Map<String, Object> user = new HashMap<>();

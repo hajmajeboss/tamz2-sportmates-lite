@@ -204,6 +204,9 @@ public class GameActivity extends AppCompatActivity {
 
         if (id == R.id.navigation_games_messages) {
             Intent intent = new Intent(ctx, ConversationActivity.class);
+            Bundle extras = new Bundle();
+            extras.putSerializable("game", game);
+            intent.putExtras(extras);
             startActivity(intent);
         }
 

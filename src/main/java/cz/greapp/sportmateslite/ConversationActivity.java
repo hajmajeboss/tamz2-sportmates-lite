@@ -1,20 +1,136 @@
 package cz.greapp.sportmateslite;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.support.design.widget.FloatingActionButton;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.View;
+import android.widget.EditText;
+import android.widget.Spinner;
+import android.widget.Toast;
 
-public class ConversationActivity extends AppCompatActivity {
+import com.google.common.collect.Table;
+import com.google.firebase.firestore.QuerySnapshot;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
+
+import cz.greapp.sportmateslite.Data.Adapters.GameAdapter;
+import cz.greapp.sportmateslite.Data.Adapters.MessageAdapter;
+import cz.greapp.sportmateslite.Data.Models.Game;
+import cz.greapp.sportmateslite.Data.Models.Message;
+import cz.greapp.sportmateslite.Data.Models.User;
+import cz.greapp.sportmateslite.Data.OnFirebaseQueryResultListener;
+import cz.greapp.sportmateslite.Data.Parsers.MessageSnapshotParser;
+import cz.greapp.sportmateslite.Data.QueryResultObserver;
+import cz.greapp.sportmateslite.Data.TableGateways.MessageTableGateway;
+import cz.greapp.sportmateslite.Data.TableGateways.TableGateway;
+import cz.greapp.sportmateslite.Data.TableGateways.UserTableGateway;
+
+public class ConversationActivity extends AppCompatActivity implements OnFirebaseQueryResultListener {
 
     Toolbar toolbar;
+
+    RecyclerView messagesListView;
+    RecyclerView.Adapter messagesListAdapter;
+    RecyclerView.LayoutManager messagesListLayoutManager;
+    List<Message> messages;
+    Context ctx;
+
+    FloatingActionButton sendFab;
+
+    SwipeRefreshLayout swipeRefreshLayout;
+
+    OnFirebaseQueryResultListener listener;
+
+    SharedPreferences preferences;
+    SharedPreferences.Editor prefEditor;
+
+    EditText messageText;
+
+    User user;
+
+    public static final int REQUEST_MESSAGES_BY_GAME = 999;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_conversation);
 
+        ctx = this;
+        listener = this;
+
         toolbar = findViewById(R.id.convoToolbar);
         setSupportActionBar(toolbar);
+
+        preferences = getSharedPreferences(getString(R.string.preferences_file_key), Context.MODE_PRIVATE);
+        user = new User(preferences.getString("username", ""), preferences.getString("useremail", ""));
+        user.setId(preferences.getString("userid", null));
+
+        messagesListView = (RecyclerView) findViewById(R.id.convoListView);
+
+        messagesListLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, true);
+        messagesListView.setLayoutManager(messagesListLayoutManager);
+
+        messages = new ArrayList<Message>();
+        messagesListAdapter = new MessageAdapter(messages, user);
+        messagesListView.setAdapter(messagesListAdapter);
+
+        messageText = findViewById(R.id.messageField);
+
+
+        final Game game = (Game)getIntent().getExtras().getSerializable("game");
+
+
+        sendFab = findViewById(R.id.sendMessageFab);
+        sendFab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (messageText.getText().toString().equals("")) {
+                    Toast.makeText(ctx, "Nelze odeslat prázdnou zprávu.", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                final MessageTableGateway gw = new MessageTableGateway();
+                gw.putMessage(new OnFirebaseQueryResultListener() {
+                    @Override
+                    public void onFirebaseQueryResult(int resultCode, int requestCode, QuerySnapshot result) {
+                        if (requestCode == 997) {
+                            if (resultCode == TableGateway.RESULT_OK) {
+                                Toast.makeText(ctx, "Zpráva byla úspěšně odeslána", Toast.LENGTH_SHORT).show();
+                                messageText.setText("");
+                                gw.getGameMesasges(this, REQUEST_MESSAGES_BY_GAME, game);
+                            }
+                            else {
+                                Toast.makeText(ctx, "Odeslání se nezdařilo. Zkontrolujte prosím připojení k internetu.", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    }
+                }, 997, game, new Message(messageText.getText().toString(), user, "21.12.2012"));
+            }
+        });
+
+        swipeRefreshLayout = findViewById(R.id.convoSwipeRefresh);
+        swipeRefreshLayout.setRefreshing(true);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                MessageTableGateway gw = new MessageTableGateway();
+                gw.getGameMesasges(listener, REQUEST_MESSAGES_BY_GAME, game);
+            }
+        });
+
+
+        MessageTableGateway gw = new MessageTableGateway();
+        gw.getGameMesasges(this, REQUEST_MESSAGES_BY_GAME, game);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
@@ -25,4 +141,20 @@ public class ConversationActivity extends AppCompatActivity {
         onBackPressed();
         return true;
     }
+
+    @Override
+    public void onFirebaseQueryResult(int resultCode, int requestCode, QuerySnapshot result) {
+        if (requestCode == REQUEST_MESSAGES_BY_GAME ) {
+            if (resultCode == TableGateway.RESULT_OK) {
+                MessageSnapshotParser parser = new MessageSnapshotParser();
+                messages = parser.parseQuerySnapshot(result);
+
+                Collections.sort(messages);
+                messagesListAdapter = new MessageAdapter(messages, user);
+                messagesListView.setAdapter(messagesListAdapter);
+                swipeRefreshLayout.setRefreshing(false);
+            }
+        }
+    }
 }
+

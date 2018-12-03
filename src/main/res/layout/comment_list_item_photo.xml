@@ -16,18 +16,31 @@
         android:layout_marginTop="16dp"
         android:text="Petr Heinz"
         android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-        app:layout_constraintStart_toEndOf="@+id/imageView3"
+        app:layout_constraintStart_toEndOf="@+id/senderAvatar"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/messageText"
+        android:id="@+id/dateSent"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
-        android:text="p.heinz@email.cz"
-        app:layout_constraintStart_toEndOf="@+id/imageView3"
+        android:text="21.12.2018 14:18"
+        android:textAppearance="@style/TextAppearance.AppCompat.Small"
+        android:textSize="12sp"
+        app:layout_constraintStart_toEndOf="@+id/senderAvatar"
         app:layout_constraintTop_toBottomOf="@+id/senderName" />
+
+    <TextView
+        android:id="@+id/messageText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        android:text="Ahoj, sejdeme se tedy toho patnácthé? Díky moc za odpověď, potřeboval bych to cědět co nejdřív..."
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/senderAvatar"
+        app:layout_constraintTop_toBottomOf="@+id/dateSent" />
 
     <View
         android:id="@+id/divider17"
@@ -38,16 +51,17 @@
         app:layout_constraintTop_toBottomOf="@+id/messageText"
         tools:layout_editor_absoluteX="8dp" />
 
-    <ImageView
-        android:id="@+id/imageView3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
+    <com.mikhaellopez.circularimageview.CircularImageView
+        android:id="@+id/senderAvatar"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"
+        android:src="@drawable/user_empty"
+        app:civ_border_width="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/account" />
+        app:layout_constraintTop_toTopOf="parent" />
 
 </android.support.constraint.ConstraintLayout>

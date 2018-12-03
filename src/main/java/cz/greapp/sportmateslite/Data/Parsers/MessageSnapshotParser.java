@@ -27,6 +27,8 @@ public class MessageSnapshotParser {
                 snapshot.getId(),
                 snapshot.getString("gameId"),
                 snapshot.getString("senderId"),
+                snapshot.getString("senderEmail"),
+                snapshot.getString("senderName"),
                 snapshot.getString("text"),
                 snapshot.getString("dateSent"));
 

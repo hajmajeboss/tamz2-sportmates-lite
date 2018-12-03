@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 import cz.greapp.sportmateslite.Data.Models.Game;
+import cz.greapp.sportmateslite.Data.Models.Message;
 import cz.greapp.sportmateslite.Data.Models.User;
 import cz.greapp.sportmateslite.Data.OnFirebaseQueryResultListener;
 import cz.greapp.sportmateslite.Data.Parsers.SportIdParser;
@@ -59,7 +60,7 @@ public class GameTableGateway extends TableGateway {
         });
     }
 
-    public void putGame(final OnFirebaseQueryResultListener listener, final int requestCode, Game g) {
+    public void putGame(final OnFirebaseQueryResultListener listener, final int requestCode, final Game g) {
         if (listener != null) {
             QueryResultObserver.getInstance().attachListener(listener);
         }
@@ -81,6 +82,10 @@ public class GameTableGateway extends TableGateway {
             public void onComplete(@NonNull Task<DocumentReference> task) {
                 if (task.isSuccessful()) {
                     QueryResultObserver.getInstance().firebaseQueryResult(RESULT_OK, requestCode, null);
+                    MessageTableGateway gw = new MessageTableGateway();
+                    Game gm = new Game();
+                    gm.setId(task.getResult().getId());
+                    gw.putMessage(null, 1024, gm, new Message("Založil/a hru.", g.getPlayers().get(0), "" ));
                 }
                 else {
                     QueryResultObserver.getInstance().firebaseQueryResult(RESULT_ERR, requestCode, null);
@@ -107,7 +112,7 @@ public class GameTableGateway extends TableGateway {
         });
     }
 
-    public void addSecondPlayer(final OnFirebaseQueryResultListener listener, final int requestCode, Game g, User u) {
+    public void addSecondPlayer(final OnFirebaseQueryResultListener listener, final int requestCode, final Game g, final User u) {
         if (listener != null) {
             QueryResultObserver.getInstance().attachListener(listener);
         }
@@ -125,6 +130,37 @@ public class GameTableGateway extends TableGateway {
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isSuccessful()) {
                     QueryResultObserver.getInstance().firebaseQueryResult(RESULT_OK, requestCode, null);
+                    MessageTableGateway gw = new MessageTableGateway();
+                    gw.putMessage(null, 1023, g, new Message("Přidal/a se ke hře.", u, "" ));
+                }
+                else {
+                    QueryResultObserver.getInstance().firebaseQueryResult(RESULT_ERR, requestCode, null);
+                }
+            }
+        });
+    }
+
+    //TODO úpravy
+    public void removeSecondPlayer(final OnFirebaseQueryResultListener listener, final int requestCode, final Game g, final User u) {
+        if (listener != null) {
+            QueryResultObserver.getInstance().attachListener(listener);
+        }
+
+        Map<String, Object> game = new HashMap<>();
+        game.put("player2_name", u.getName());
+        game.put("player2_email", u.getEmail());
+        List<String> emails = new ArrayList<>();
+        emails.add(g.getPlayers().get(0).getEmail());
+        emails.add(u.getEmail());
+        game.put("player_emails", emails);
+
+        db.collection("games").document(g.getId()).update(game).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isSuccessful()) {
+                    QueryResultObserver.getInstance().firebaseQueryResult(RESULT_OK, requestCode, null);
+                    MessageTableGateway gw = new MessageTableGateway();
+                    gw.putMessage(null, 1023, g, new Message("Opustil/a hru.", u, "" ));
                 }
                 else {
                     QueryResultObserver.getInstance().firebaseQueryResult(RESULT_ERR, requestCode, null);

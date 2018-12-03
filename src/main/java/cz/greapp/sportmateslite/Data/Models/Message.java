@@ -1,23 +1,51 @@
 package cz.greapp.sportmateslite.Data.Models;
 
-public class Message {
+import android.support.annotation.NonNull;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+public class Message implements Comparable<Message> {
     private String id;
     private String gameId;
     private String senderId;
     private String text;
     private String dateTime;
+    private String senderEmail;
+    private String senderName;
 
     private Game game;
     private User sender;
 
-    public Message() {}
+    public Message() {
+    }
 
-    public Message(String id, String gameId, String senderId, String text, String dateTime) {
+    public Message(String id, String gameId, String senderId, String senderEmail, String senderName, String text, String dateTime) {
         this.id = id;
         this.gameId = gameId;
         this.senderId = senderId;
+        this.senderEmail = senderEmail;
+        this.senderName = senderName;
         this.text = text;
         this.dateTime = dateTime;
+    }
+
+    public Message(String message, User user, String dateTime) {
+        this.text = message;
+        this.senderId = user.getId();
+        this.senderEmail = user.getEmail();
+        this.senderName = user.getName();
+        this.dateTime = dateTime;
+    }
+
+    public Message(String message, User user, String gameId, String dateTime) {
+        this.text = message;
+        this.senderId = user.getId();
+        this.senderEmail = user.getEmail();
+        this.senderName = user.getName();
+        this.dateTime = dateTime;
+        this.gameId = gameId;
     }
 
     public String getId() {
@@ -74,4 +102,35 @@ public class Message {
     public void setText(String text) {
         this.text = text;
     }
+
+    public String getSenderEmail() {
+        return senderEmail;
+    }
+
+    public void setSenderEmail(String senderEmail) {
+        this.senderEmail = senderEmail;
+    }
+
+    public String getSenderName() {
+        return senderName;
+    }
+
+    public void setSenderName(String senderName) {
+        this.senderName = senderName;
+    }
+
+    @Override
+    public int compareTo(@NonNull Message m) {
+        SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
+        try {
+            Date d = sdf.parse(this.dateTime);
+            Date d1 = sdf.parse(m.getDateTime());
+
+            return d1.compareTo(d);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return 0;
+        }
+    }
 }
+

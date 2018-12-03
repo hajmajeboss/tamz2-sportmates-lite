@@ -7,7 +7,9 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -46,8 +48,11 @@ public class MessageTableGateway extends TableGateway {
         Map<String, Object> message = new HashMap<>();
 
         message.put("gameId", g.getId());
-        message.put("senderId", m.getSender().getId());
-        message.put("dateSent", "21.6.2018");
+        message.put("senderId", m.getSenderId());
+        message.put("senderEmail", m.getSenderEmail());
+        message.put("senderName", m.getSenderName());
+        String timeStamp = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss").format(Calendar.getInstance().getTime());
+        message.put("dateSent", timeStamp);
         message.put("text", m.getText());
 
         db.collection("messages").add(message).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {

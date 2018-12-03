@@ -21,8 +21,8 @@ public class PlayerAdapter extends RecyclerView.Adapter<PlayerAdapter.PlayerView
         public TextView playerEmailText;
         public PlayerViewHolder(ConstraintLayout v) {
             super(v);
-            playerNameText = (TextView) v.findViewById(R.id.playerNameText);
-            playerEmailText = (TextView) v.findViewById(R.id.playerEmailText);
+            playerNameText = (TextView) v.findViewById(R.id.senderName);
+            playerEmailText = (TextView) v.findViewById(R.id.messageText);
         }
     }
 
