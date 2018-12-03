@@ -14,6 +14,7 @@ Pro úspěšné sestavení projektu je nutný soubor obsahujicí Google API Key 
 - práce s Firebase FireStore databází - asynchronní stahování dat/upload dat
 - práce s FireBase Cloud Storage - asynchronní stahování obrázků, nahrávání obrázků na internet
 - autentifikace - login, registrace nového uživatele
+- zasílání zpráv mezi uživateli
 
 ### Screenshoty
 ![Alt text](screen2.png?raw=true "Screenshot") ![Alt text](screen5.png?raw=true "Screenshot") ![Alt text](screen3.png?raw=true "Screenshot") 
