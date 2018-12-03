@@ -31,6 +31,7 @@ import cz.greapp.sportmateslite.Data.Models.User;
 import cz.greapp.sportmateslite.Data.OnFirebaseQueryResultListener;
 import cz.greapp.sportmateslite.Data.Parsers.MessageSnapshotParser;
 import cz.greapp.sportmateslite.Data.QueryResultObserver;
+import cz.greapp.sportmateslite.Data.TableGateways.GameTableGateway;
 import cz.greapp.sportmateslite.Data.TableGateways.MessageTableGateway;
 import cz.greapp.sportmateslite.Data.TableGateways.TableGateway;
 import cz.greapp.sportmateslite.Data.TableGateways.UserTableGateway;
@@ -57,8 +58,12 @@ public class ConversationActivity extends AppCompatActivity implements OnFirebas
     EditText messageText;
 
     User user;
+    Game game;
+
+    Thread updateThread;
 
     public static final int REQUEST_MESSAGES_BY_GAME = 999;
+    public static final int REQUEST_SEND_MESSAGE = 997;
 
 
     @Override
@@ -88,7 +93,7 @@ public class ConversationActivity extends AppCompatActivity implements OnFirebas
         messageText = findViewById(R.id.messageField);
 
 
-        final Game game = (Game)getIntent().getExtras().getSerializable("game");
+        game = (Game)getIntent().getExtras().getSerializable("game");
 
 
         sendFab = findViewById(R.id.sendMessageFab);
@@ -100,21 +105,8 @@ public class ConversationActivity extends AppCompatActivity implements OnFirebas
                     return;
                 }
                 final MessageTableGateway gw = new MessageTableGateway();
-                gw.putMessage(new OnFirebaseQueryResultListener() {
-                    @Override
-                    public void onFirebaseQueryResult(int resultCode, int requestCode, QuerySnapshot result) {
-                        if (requestCode == 997) {
-                            if (resultCode == TableGateway.RESULT_OK) {
-                                Toast.makeText(ctx, "Zpráva byla úspěšně odeslána", Toast.LENGTH_SHORT).show();
-                                messageText.setText("");
-                                gw.getGameMesasges(this, REQUEST_MESSAGES_BY_GAME, game);
-                            }
-                            else {
-                                Toast.makeText(ctx, "Odeslání se nezdařilo. Zkontrolujte prosím připojení k internetu.", Toast.LENGTH_SHORT).show();
-                            }
-                        }
-                    }
-                }, 997, game, new Message(messageText.getText().toString(), user, "21.12.2012"));
+                swipeRefreshLayout.setRefreshing(true);
+                gw.putMessage(listener, REQUEST_SEND_MESSAGE, game, new Message(messageText.getText().toString(), user, ""));
             }
         });
 
@@ -134,12 +126,42 @@ public class ConversationActivity extends AppCompatActivity implements OnFirebas
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
+
+        updateThread = new Thread() {
+
+            @Override
+            public void run() {
+                try {
+                    while (!this.isInterrupted()) {
+                        Thread.sleep(10000);
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                swipeRefreshLayout.setRefreshing(true);
+                                MessageTableGateway gw = new MessageTableGateway();
+                                gw.getGameMesasges(listener, REQUEST_MESSAGES_BY_GAME, game);
+                            }
+                        });
+                    }
+                } catch (InterruptedException e) {
+                }
+            }
+        };
+
+        updateThread.start();
     }
 
     @Override
     public boolean onSupportNavigateUp() {
         onBackPressed();
         return true;
+    }
+
+    @Override
+    public void onBackPressed() {
+        updateThread.interrupt();
+        finish();
+        super.onBackPressed();
     }
 
     @Override
@@ -153,6 +175,19 @@ public class ConversationActivity extends AppCompatActivity implements OnFirebas
                 messagesListAdapter = new MessageAdapter(messages, user);
                 messagesListView.setAdapter(messagesListAdapter);
                 swipeRefreshLayout.setRefreshing(false);
+            }
+        }
+
+        if (requestCode == REQUEST_SEND_MESSAGE) {
+            if (resultCode == TableGateway.RESULT_OK) {
+                Toast.makeText(ctx, "Zpráva byla úspěšně odeslána", Toast.LENGTH_SHORT).show();
+                messageText.setText("");
+                MessageTableGateway gw = new MessageTableGateway();
+                gw.getGameMesasges(this, REQUEST_MESSAGES_BY_GAME, game);
+            }
+            else {
+                swipeRefreshLayout.setRefreshing(false);
+                Toast.makeText(ctx, "Odeslání se nezdařilo. Zkontrolujte prosím připojení k internetu.", Toast.LENGTH_SHORT).show();
             }
         }
     }
