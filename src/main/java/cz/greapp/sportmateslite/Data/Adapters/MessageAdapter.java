@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.List;
 
@@ -53,6 +54,15 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
         messagesList = messages;
         this.user = user;
     }
+
+    /*
+    public void updateDataSet(List<Message> messages) {
+        if (messagesList.size() < messages.size()) {
+            messagesList.clear();
+            messagesList.addAll(messages);
+            notifyDataSetChanged();
+        }
+    }*/
 
     @Override
     public MessageAdapter.MessageViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {

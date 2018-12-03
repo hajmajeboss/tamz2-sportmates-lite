@@ -1,6 +1,7 @@
 package cz.greapp.sportmateslite;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -9,12 +10,15 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.google.common.collect.Table;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
@@ -159,9 +163,49 @@ public class ConversationActivity extends AppCompatActivity implements OnFirebas
 
     @Override
     public void onBackPressed() {
+        // Interrupts updating conversation
         updateThread.interrupt();
+        // Removes listener - you won't receive updates from different conversation
+        QueryResultObserver.getInstance().removeListener(this);
         finish();
         super.onBackPressed();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main_nav, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        int id = item.getItemId();
+
+        /*
+        if (id == R.id.main_navigation_settings) {
+            Intent intent = new Intent(ctx, SettingsActivity.class);
+            startActivity(intent);
+            return true;
+        }*/
+
+        if (id == R.id.main_navigation_about) {
+            Intent intent = new Intent(ctx, AboutActivity.class);
+            startActivity(intent);
+            return true;
+        }
+
+        if (id == R.id.main_navigation_logout) {
+            FirebaseAuth auth = FirebaseAuth.getInstance();
+            auth.signOut();
+            Intent intent = new Intent(ctx, LoginActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            finish();
+            startActivity(intent);
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -169,11 +213,12 @@ public class ConversationActivity extends AppCompatActivity implements OnFirebas
         if (requestCode == REQUEST_MESSAGES_BY_GAME ) {
             if (resultCode == TableGateway.RESULT_OK) {
                 MessageSnapshotParser parser = new MessageSnapshotParser();
-                messages = parser.parseQuerySnapshot(result);
+                List<Message> messagesLst = parser.parseQuerySnapshot(result);
 
-                Collections.sort(messages);
-                messagesListAdapter = new MessageAdapter(messages, user);
+                Collections.sort(messagesLst);
+                messagesListAdapter = new MessageAdapter(messagesLst, user);
                 messagesListView.setAdapter(messagesListAdapter);
+              //  ((MessageAdapter)messagesListAdapter).updateDataSet(messagesLst);
                 swipeRefreshLayout.setRefreshing(false);
             }
         }

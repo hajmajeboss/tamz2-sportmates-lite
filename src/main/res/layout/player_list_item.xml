@@ -31,12 +31,14 @@
 
     <View
         android:id="@+id/divider17"
-        android:layout_width="368dp"
+        android:layout_width="0dp"
         android:layout_height="1dp"
+        android:layout_marginStart="32dp"
         android:layout_marginTop="16dp"
         android:background="?android:attr/listDivider"
-        app:layout_constraintTop_toBottomOf="@+id/messageText"
-        tools:layout_editor_absoluteX="8dp" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/messageText" />
 
     <ImageView
         android:id="@+id/imageView3"

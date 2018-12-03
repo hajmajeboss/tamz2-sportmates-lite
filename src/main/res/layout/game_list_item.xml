@@ -44,6 +44,7 @@
         android:id="@+id/divider5"
         android:layout_width="0dp"
         android:layout_height="1dp"
+        android:layout_marginStart="32dp"
         android:layout_marginTop="16dp"
         android:background="?android:attr/listDivider"
         app:layout_constraintBottom_toBottomOf="parent"

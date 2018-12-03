@@ -18,6 +18,7 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import cz.greapp.sportmateslite.Data.Adapters.PlayerAdapter;
@@ -194,6 +195,7 @@ public class GameActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.game_nav, menu);
+        getMenuInflater().inflate(R.menu.main_nav, menu);
         return true;
     }
 
@@ -210,6 +212,25 @@ public class GameActivity extends AppCompatActivity {
             startActivity(intent);
         }
 
+        if (id == R.id.main_navigation_about) {
+            Intent intent = new Intent(ctx, AboutActivity.class);
+            startActivity(intent);
+            return true;
+        }
+
+        if (id == R.id.main_navigation_logout) {
+            FirebaseAuth auth = FirebaseAuth.getInstance();
+            auth.signOut();
+            Intent intent = new Intent(ctx, LoginActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            finish();
+            startActivity(intent);
+            return true;
+        }
+
+
         return super.onOptionsItemSelected(item);
     }
+
+
 }
