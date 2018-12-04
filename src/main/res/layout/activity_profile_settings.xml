@@ -131,7 +131,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:theme="@style/ToolbarColoredBackArrow"
-        app:title="@string/app_name"
+        app:title="Nastavení"
         app:titleTextColor="@android:color/white" />
 
     <TextView

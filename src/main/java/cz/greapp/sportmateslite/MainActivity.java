@@ -226,7 +226,7 @@ public class MainActivity extends AppCompatActivity implements ProfileFragment.O
         if (requestCode == REQUEST_USER_BY_EMAIL) {
             if (resultCode == TableGateway.RESULT_OK) {
                 List<DocumentSnapshot> refList = result.getDocuments();
-                if (refList != null && refList.size() > 0 ) {
+                if (refList != null && refList.size() > 0) {
                     DocumentSnapshot ref = refList.get(0);
                     user = new User(ref.getString("name"), ref.getString("email"));
                     user.setId(ref.getId());
@@ -237,31 +237,8 @@ public class MainActivity extends AppCompatActivity implements ProfileFragment.O
                     prefEdit.putString("userid", user.getId());
                     prefEdit.commit();
 
-                    FirebaseStorage storageRef = FirebaseStorage.getInstance();
-
-                    StorageReference gsReference = storageRef.getReferenceFromUrl("gs://sportmateslite.appspot.com/" + ref.getId() +  ".jpg");
-
-                    try {
-                        final File localFile = File.createTempFile("images", "jpg");
-                        gsReference.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
-                            @Override
-                            public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
-                                user.setProfileImage(localFile);
-                                progressDialog.dismiss();
-                            }
-                        }).addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception exception) {
-                                progressDialog.dismiss();
-                            }
-                        });
-                    }
-                    catch (IOException e) {
-
-                    }
-
+                    progressDialog.dismiss();
                 }
-
             }
             else {
                 Toast.makeText(ctx, "Chyba", Toast.LENGTH_SHORT).show();

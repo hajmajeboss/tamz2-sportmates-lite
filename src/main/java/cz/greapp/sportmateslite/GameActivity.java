@@ -103,16 +103,11 @@ public class GameActivity extends AppCompatActivity {
                 new RecyclerItemClickListener(ctx, playersListView ,new RecyclerItemClickListener.OnItemClickListener() {
                     @Override public void onItemClick(View view, int position) {
 
-                     /*   ShareCompat.IntentBuilder.from(activity)
-                                .setType("message/rfc822")
-                                .addEmailTo(game.getPlayers().get(position).getEmail())
-                                .setSubject("Zpráva z aplikace Sportmates")
-                                .setText(game.getSport().getName() + " - " + game.getPlace() + " - " + game.getDate() + " " + game.getTimeFrom() + "-" + game.getTimeTo() + "\n\n" + "Text zprávy: ")
-                                .setChooserTitle("Vyberte emailového klienta:")
-                                .startChooser();*/
-
-
-
+                        Intent intent = new Intent(ctx, UserProfileActivity.class);
+                        Bundle bundle = new Bundle();
+                        bundle.putSerializable("user", game.getPlayers().get(position));
+                        intent.putExtras(bundle);
+                        startActivity(intent);
                     }
 
                     @Override public void onLongItemClick(View view, int position) {

@@ -10,11 +10,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.google.firebase.storage.FirebaseStorage;
 
 import cz.greapp.sportmateslite.Data.Models.User;
+import cz.greapp.sportmateslite.Data.TableGateways.UserTableGateway;
 
 
 public class ProfileFragment extends Fragment {
@@ -33,10 +35,13 @@ public class ProfileFragment extends Fragment {
     SharedPreferences.Editor prefEdit;
 
     ImageView profileImage;
+    ProgressBar progressBar;
 
     TextView nameText;
     TextView emailText;
     Context ctx;
+
+    User user;
 
     FirebaseStorage storageRef;
 
@@ -97,12 +102,13 @@ public class ProfileFragment extends Fragment {
         preferences = ctx.getSharedPreferences(getString(R.string.preferences_file_key), Context.MODE_PRIVATE);
         prefEdit = preferences.edit();
 
-        nameText = (TextView) view.findViewById(R.id.nameText);
+        nameText = (TextView) view.findViewById(R.id.playerName);
         emailText = (TextView) view.findViewById(R.id.emailText);
 
-        User user = ((MainActivity)getActivity()).getUser();
+        user = ((MainActivity)getActivity()).getUser();
         nameText.setText(user.getName());
         emailText.setText(user.getEmail());
+
 
         /*
         profileSettingsButton = (Button) view.findViewById(R.id.profileSettingsButton);
@@ -118,10 +124,17 @@ public class ProfileFragment extends Fragment {
         });
         */
 
-        profileImage = view.findViewById(R.id.senderAvatar);
+
+        profileImage = view.findViewById(R.id.playerAvatar);
+        progressBar = view.findViewById(R.id.profileProgressBar);
+
+        UserTableGateway gw = new UserTableGateway();
+        gw.loadUserImage(user, profileImage, progressBar);
+
+        /*
         if (user.getProfileImage() != null) {
             profileImage.setImageBitmap(BitmapFactory.decodeFile(user.getProfileImage().getAbsolutePath()));
-        }
+        }*/
 
     }
 
@@ -134,6 +147,13 @@ public class ProfileFragment extends Fragment {
             throw new RuntimeException(context.toString()
                     + " must implement OnFragmentInteractionListener");
         }
+    }
+
+    @Override
+    public void onResume() {
+        UserTableGateway gw = new UserTableGateway();
+        gw.loadUserImage(user, profileImage, progressBar);
+        super.onResume();
     }
 
     @Override

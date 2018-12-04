@@ -1,13 +1,26 @@
 package cz.greapp.sportmateslite.Data.TableGateways;
 
+import android.graphics.BitmapFactory;
 import android.support.annotation.NonNull;
 import android.util.Log;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
+
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.storage.FileDownloadTask;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+
+import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import cz.greapp.sportmateslite.Data.Models.User;
@@ -68,6 +81,38 @@ public class UserTableGateway extends TableGateway {
                 }
             }
         });
+    }
+
+    public void loadUserImage(User user, final ImageView imageView, final ProgressBar progressBar)
+    {
+        FirebaseStorage storageRef = FirebaseStorage.getInstance();
+
+        StorageReference gsReference = storageRef.getReferenceFromUrl("gs://sportmateslite.appspot.com/" + user.getId() +  ".jpg");
+
+        imageView.setVisibility(View.INVISIBLE);
+        progressBar.setVisibility(View.VISIBLE);
+
+        try {
+            final File localFile = File.createTempFile("images", "jpg");
+            gsReference.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                    imageView.setImageBitmap(BitmapFactory.decodeFile(localFile.getAbsolutePath()));
+                    imageView.setVisibility(View.VISIBLE);
+                    progressBar.setVisibility(View.GONE);
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception exception) {
+                    imageView.setVisibility(View.VISIBLE);
+                    progressBar.setVisibility(View.GONE);
+                }
+            });
+        }
+        catch (IOException e) {
+
+        }
+
     }
 
 }
